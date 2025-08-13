@@ -16,8 +16,8 @@ app = Flask(__name__)
 # محصولات نمونه
 products = {
     "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
-    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان"},
-    "1303": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر به جز سبز", "price": 747000, "unit": "هزار تومان"},
+    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
+    "1303": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر به جز سبز", "price": 747000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0396.jpeg"},
     "3389": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر (مانتو کتی)", "price": 797000, "unit": "هزار تومان"},
     "1106": {"name": "فری سایز - دو طرح رنگ: در تصویر", "price": 397000, "unit": "هزار تومان"},
     "1203": {"name": "فری سایز - پک 6 عددی رنگ: سفید", "price": 547000, "unit": "هزار تومان"},
