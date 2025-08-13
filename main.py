@@ -21,7 +21,7 @@ ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
-pdfmetrics.registerFont(TTFont('Vazirmatn', 'https://github.com/rastikerdar/vazir-font/raw/master/Vazirmatn-Regular.ttf'))
+pdfmetrics.registerFont(TTFont('Vazirmatn', 'Vazirmatn-Regular.ttf'))
 
 def reshape_text(text):
     return get_display(arabic_reshaper.reshape(text))
