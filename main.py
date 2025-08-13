@@ -1,11 +1,18 @@
 from flask import Flask, render_template, request
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.pagesizes import A4
 import os
 import requests
+import arabic_reshaper
+from bidi.algorithm import get_display
 
 app = Flask(__name__)
 os.makedirs("orders", exist_ok=True)
+
+# ثبت فونت فارسی
+pdfmetrics.registerFont(TTFont('Vazirmatn', 'Vazirmatn-Regular.ttf'))
 
 # محصولات نمونه
 products = {
@@ -18,23 +25,29 @@ products = {
 ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
+# تابع فارسی و راست‌چین
+def to_persian(text):
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped_text)
+    return bidi_text
+
 def create_invoice(filename, customer, order_items):
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
     y = height - 50
 
     # عنوان فاکتور
-    c.setFont("Helvetica-Bold", 16)
-    c.drawCentredString(width/2, y, "فاکتور سفارش")
+    c.setFont("Vazirmatn", 16)
+    c.drawCentredString(width/2, y, to_persian("فاکتور سفارش"))
     y -= 40
 
-    c.setFont("Helvetica", 12)
     # اطلاعات مشتری
-    c.drawString(50, y, f"نام مشتری: {customer['name']}")
+    c.setFont("Vazirmatn", 12)
+    c.drawRightString(width-50, y, to_persian(f"نام مشتری: {customer['name']}"))
     y -= 20
-    c.drawString(50, y, f"شماره تماس: {customer['phone']}")
+    c.drawRightString(width-50, y, to_persian(f"شماره تماس: {customer['phone']}"))
     y -= 20
-    c.drawString(50, y, f"آدرس: {customer['address']}")
+    c.drawRightString(width-50, y, to_persian(f"آدرس: {customer['address']}"))
     y -= 30
 
     # خط جداکننده
@@ -42,16 +55,15 @@ def create_invoice(filename, customer, order_items):
     y -= 20
 
     total = 0
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, "محصولات:")
+    c.setFont("Vazirmatn", 12)
+    c.drawRightString(width-50, y, to_persian("محصولات:"))
     y -= 20
-    c.setFont("Helvetica", 12)
 
     for item in order_items:
         product = products.get(item["code"])
         if product:
             line = f"{product['name']} - تعداد: {item['count']} - قیمت واحد: {product['price']} تومان"
-            c.drawString(60, y, line)
+            c.drawRightString(width-50, y, to_persian(line))
             total += product['price'] * item['count']
             y -= 20
 
@@ -59,8 +71,8 @@ def create_invoice(filename, customer, order_items):
     y -= 10
     c.line(50, y, width - 50, y)
     y -= 20
-    c.setFont("Helvetica-Bold", 12)
-    c.drawString(50, y, f"جمع کل: {total} تومان")
+    c.setFont("Vazirmatn", 12)
+    c.drawRightString(width-50, y, to_persian(f"جمع کل: {total} تومان"))
 
     c.save()
 
@@ -77,22 +89,19 @@ def order():
     order_counts = request.form.getlist("order_count")
 
     order_items = [{"code": c, "count": int(n)} for c, n in zip(order_codes, order_counts)]
-
-    filename = f"orders/invoice_{phone}.pdf"
     customer = {"name": name, "phone": phone, "address": address}
+    filename = f"orders/invoice_{phone}.pdf"
+
     create_invoice(filename, customer, order_items)
 
-    # ارسال به تلگرام
+    # ارسال PDF به تلگرام مدیر
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
 
-    # پاک کردن فایل بعد از ارسال
-    os.remove(filename)
-
+    os.remove(filename)  # پاک کردن فایل بعد از ارسال
     return "✅ سفارش ثبت شد و فاکتور برای مدیر ارسال شد!"
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
