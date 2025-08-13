@@ -4,6 +4,8 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import requests
 import os
+import arabic_reshaper
+from bidi.algorithm import get_display
 
 app = Flask(__name__)
 os.makedirs("orders", exist_ok=True)
@@ -20,18 +22,20 @@ ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
-pdfmetrics.registerFont(TTFont('Vazirmatn', 'Vazirmatn-Regular.ttf'))
+pdfmetrics.registerFont(TTFont('Vazirmatn', 'fonts/Vazirmatn-Regular.ttf'))
 
-# تابع برای برعکس کردن متن
-def reverse_text(text):
-    return text[::-1]
+# تابع برای درست کردن متن فارسی (چسبیده و راست‌چین)
+def to_persian(text):
+    reshaped_text = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped_text)
+    return bidi_text
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     reversed_text = ""
     if request.method == "POST" and "reverse_input" in request.form:
         text = request.form.get("reverse_input")
-        reversed_text = reverse_text(text)
+        reversed_text = text[::-1]  # برعکس کردن متن
     return render_template("index.html", products=products, reversed_text=reversed_text)
 
 @app.route('/order', methods=['POST'])
@@ -49,14 +53,14 @@ def order():
     c.setFont("Vazirmatn", 14)
     y = 800
 
-    # برعکس کردن متن‌ها
-    c.drawRightString(550, y, reverse_text(f"سفارش مشتری: {name}"))
+    # نوشتن متن فارسی و راست‌چین
+    c.drawRightString(550, y, to_persian(f"سفارش مشتری: {name}"))
     y -= 30
-    c.drawRightString(550, y, reverse_text(f"شماره تماس: {phone}"))
+    c.drawRightString(550, y, to_persian(f"شماره تماس: {phone}"))
     y -= 30
-    c.drawRightString(550, y, reverse_text(f"شهر: {city}, آدرس: {address}"))
+    c.drawRightString(550, y, to_persian(f"شهر: {city}, آدرس: {address}"))
     y -= 50
-    c.drawRightString(550, y, reverse_text("محصولات:"))
+    c.drawRightString(550, y, to_persian("محصولات:"))
     y -= 30
 
     total = 0
@@ -65,14 +69,14 @@ def order():
         product = products.get(code)
         if product:
             price = product["price"]
-            c.drawRightString(550, y, reverse_text(f"{product['name']} - تعداد: {count} - قیمت واحد: {price} تومان"))
+            c.drawRightString(550, y, to_persian(f"{product['name']} - تعداد: {count} - قیمت واحد: {price} تومان"))
             total += count * price
             y -= 20
 
-    c.drawRightString(550, y-20, reverse_text(f"جمع کل: {total} تومان"))
+    c.drawRightString(550, y-20, to_persian(f"جمع کل: {total} تومان"))
     c.save()
 
-    # ارسال PDF به مدیر
+    # ارسال PDF به مدیر تلگرام
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
@@ -83,6 +87,5 @@ def order():
     return f"✅ سفارش ثبت شد و فاکتور برای مدیر ارسال شد!"
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
