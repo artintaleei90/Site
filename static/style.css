@@ -1,4 +1,31 @@
-body { font-family: 'Tahoma', sans-serif; }
-h1 { color: #333; }
-.card { border-radius: 15px; transition: transform 0.2s; }
-.card:hover { transform: scale(1.03); }
+body {
+    font-family: Vazirmatn, sans-serif;
+    direction: rtl;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+#products {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #fff;
+    width: 200px;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+}
