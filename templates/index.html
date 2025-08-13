@@ -2,32 +2,127 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فروشگاه هالستون</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            direction: rtl;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #232f3e;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        header input[type="text"] {
+            width: 300px;
+            padding: 5px;
+            border-radius: 3px;
+            border: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-card img {
+            max-width: 200px;
+            border-radius: 5px;
+        }
+        .product-card h3 {
+            margin: 10px 0;
+        }
+        .product-card p {
+            margin: 5px 0;
+        }
+        .product-card input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+        form button {
+            margin-top: 15px;
+            background-color: #febd69;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        form button:hover {
+            background-color: #f3a847;
+        }
+        footer {
+            text-align: center;
+            margin: 30px 0;
+            color: #666;
+        }
+        .form-section {
+            grid-column: span 2;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-section input[type="text"], .form-section input[type="tel"] {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h1>فروشگاه هالستون زنانه</h1>
-    <div id="products">
+
+<header>
+    <h1>فروشگاه هالستون</h1>
+    <input type="text" placeholder="جستجو در محصولات">
+</header>
+
+<form action="/order" method="POST">
+    <div class="container">
         {% for code, product in products.items() %}
-        <div class="product">
-            <img src="{{ product.img }}" alt="{{ product.name }}">
+        <div class="product-card">
+            <img src="https://via.placeholder.com/200?text={{ product.name }}" alt="{{ product.name }}">
             <h3>{{ product.name }}</h3>
             <p>{{ product.price }} تومان</p>
-            <input type="number" min="0" value="0" data-code="{{ code }}" class="count">
+            <input type="hidden" name="order_code" value="{{ code }}">
+            <input type="number" name="order_count" min="0" value="0">
         </div>
         {% endfor %}
+
+        <div class="form-section">
+            <h2>مشخصات مشتری</h2>
+            <input type="text" name="name" placeholder="نام و نام خانوادگی" required>
+            <input type="tel" name="phone" placeholder="شماره تماس" required>
+            <input type="text" name="address" placeholder="آدرس کامل" required>
+            <button type="submit">ثبت سفارش</button>
+        </div>
     </div>
+</form>
 
-    <h2>فرم سفارش</h2>
-    <form id="orderForm" method="POST" action="/order">
-        <label>نام: <input type="text" name="name" required></label><br>
-        <label>شماره تماس: <input type="text" name="phone" required></label><br>
-        <label>شهر: <input type="text" name="city" required></label><br>
-        <label>آدرس: <input type="text" name="address" required></label><br>
-        <div id="hiddenInputs"></div>
-        <button type="submit">ثبت سفارش</button>
-    </form>
+<footer>
+    © 2025 فروشگاه هالستون
+</footer>
 
-    <script src="/static/script.js"></script>
 </body>
 </html>
