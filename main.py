@@ -1,18 +1,13 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.pagesizes import A4
-import os
+from reportlab.pdfbase import pdfmetrics
 import requests
 import arabic_reshaper
 from bidi.algorithm import get_display
+import os
 
 app = Flask(__name__)
-os.makedirs("orders", exist_ok=True)
-
-# ثبت فونت فارسی
-pdfmetrics.registerFont(TTFont('Vazirmatn', 'Vazirmatn-Regular.ttf'))
 
 # محصولات نمونه
 products = {
@@ -21,60 +16,15 @@ products = {
     "P003": {"name": "دامن کوتاه", "price": 397000},
 }
 
-# اطلاعات مدیر تلگرام
+# اطلاعات مدیر برای ارسال PDF
 ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
-# تابع فارسی و راست‌چین
-def to_persian(text):
-    reshaped_text = arabic_reshaper.reshape(text)
-    bidi_text = get_display(reshaped_text)
-    return bidi_text
+# ثبت فونت فارسی
+pdfmetrics.registerFont(TTFont('Vazirmatn', 'https://github.com/rastikerdar/vazir-font/raw/master/Vazirmatn-Regular.ttf'))
 
-def create_invoice(filename, customer, order_items):
-    c = canvas.Canvas(filename, pagesize=A4)
-    width, height = A4
-    y = height - 50
-
-    # عنوان فاکتور
-    c.setFont("Vazirmatn", 16)
-    c.drawCentredString(width/2, y, to_persian("فاکتور سفارش"))
-    y -= 40
-
-    # اطلاعات مشتری
-    c.setFont("Vazirmatn", 12)
-    c.drawRightString(width-50, y, to_persian(f"نام مشتری: {customer['name']}"))
-    y -= 20
-    c.drawRightString(width-50, y, to_persian(f"شماره تماس: {customer['phone']}"))
-    y -= 20
-    c.drawRightString(width-50, y, to_persian(f"آدرس: {customer['address']}"))
-    y -= 30
-
-    # خط جداکننده
-    c.line(50, y, width - 50, y)
-    y -= 20
-
-    total = 0
-    c.setFont("Vazirmatn", 12)
-    c.drawRightString(width-50, y, to_persian("محصولات:"))
-    y -= 20
-
-    for item in order_items:
-        product = products.get(item["code"])
-        if product:
-            line = f"{product['name']} - تعداد: {item['count']} - قیمت واحد: {product['price']} تومان"
-            c.drawRightString(width-50, y, to_persian(line))
-            total += product['price'] * item['count']
-            y -= 20
-
-    # خط جداکننده جمع کل
-    y -= 10
-    c.line(50, y, width - 50, y)
-    y -= 20
-    c.setFont("Vazirmatn", 12)
-    c.drawRightString(width-50, y, to_persian(f"جمع کل: {total} تومان"))
-
-    c.save()
+def reshape_text(text):
+    return get_display(arabic_reshaper.reshape(text))
 
 @app.route('/')
 def index():
@@ -88,20 +38,42 @@ def order():
     order_codes = request.form.getlist("order_code")
     order_counts = request.form.getlist("order_count")
 
-    order_items = [{"code": c, "count": int(n)} for c, n in zip(order_codes, order_counts)]
-    customer = {"name": name, "phone": phone, "address": address}
-    filename = f"orders/invoice_{phone}.pdf"
+    # ساخت PDF
+    filename = f"invoice_{phone}.pdf"
+    c = canvas.Canvas(filename)
+    y = 800
 
-    create_invoice(filename, customer, order_items)
+    c.setFont("Vazirmatn", 14)
+    c.drawString(50, y, reshape_text(f"سفارش مشتری: {name}"))
+    y -= 30
+    c.drawString(50, y, reshape_text(f"شماره تماس: {phone}"))
+    y -= 30
+    c.drawString(50, y, reshape_text(f"آدرس: {address}"))
+    y -= 50
+    c.drawString(50, y, reshape_text("محصولات:"))
+    y -= 30
 
-    # ارسال PDF به تلگرام مدیر
+    total = 0
+    for code, count in zip(order_codes, order_counts):
+        count = int(count)
+        product = products.get(code)
+        if product:
+            price = product["price"]
+            line = f"{product['name']} - تعداد: {count} - قیمت واحد: {price}"
+            c.drawString(60, y, reshape_text(line))
+            total += count * price
+            y -= 20
+
+    c.drawString(50, y-20, reshape_text(f"جمع کل: {total} تومان"))
+    c.save()
+
+    # ارسال PDF به مدیر
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
 
-    os.remove(filename)  # پاک کردن فایل بعد از ارسال
-    return "✅ سفارش ثبت شد و فاکتور برای مدیر ارسال شد!"
+    # نمایش PDF به کاربر
+    return send_file(filename, as_attachment=True)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
