@@ -1,0 +1,4 @@
+body { font-family: Tahoma, sans-serif; padding: 20px; }
+h1 { color: #333; }
+input, button { margin: 5px 0; padding: 5px; }
+button { cursor: pointer; }
