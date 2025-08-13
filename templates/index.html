@@ -116,8 +116,9 @@
 <div class="container">
     {% for code, product in products.items() %}
     <div class="product-card">
-        <img src="https://via.placeholder.com/200?text={{ product.name }}" alt="{{ product.name }}">
+        <img src="{{ product.image }}" alt="{{ product.name }}">
         <h3>{{ product.name }}</h3>
+        <p>کد کالا: {{ code }}</p>
         <p>{{ product.price }} تومان</p>
         <button onclick="addToCart('{{ code }}','{{ product.name }}',{{ product.price }})">افزودن به سبد خرید</button>
     </div>
@@ -177,7 +178,6 @@ function submitOrder() {
     let address = document.getElementById("customerAddress").value;
     if(!name || !phone || !address) return alert("لطفاً تمام مشخصات را وارد کنید.");
 
-    // ساخت فرم و ارسال POST
     let form = document.createElement("form");
     form.method = "POST";
     form.action = "/order";
