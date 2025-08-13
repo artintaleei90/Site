@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 import requests
+import os
 
 app = Flask(__name__)
+os.makedirs("orders", exist_ok=True)
 
 # محصولات نمونه
 products = {
@@ -12,8 +16,11 @@ products = {
 }
 
 # اطلاعات مدیر برای ارسال PDF
-ADMIN_CHAT_ID = 6933858510  # Chat ID مدیر
+ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
+
+# ثبت فونت فارسی
+pdfmetrics.registerFont(TTFont('Vazirmatn', 'Vazirmatn-Regular.ttf'))
 
 @app.route('/')
 def index():
@@ -29,16 +36,18 @@ def order():
     order_counts = request.form.getlist("order_count")
 
     # ساخت PDF فاکتور
-    filename = f"invoice_{phone}.pdf"
+    filename = f"orders/invoice_{phone}.pdf"
     c = canvas.Canvas(filename)
+    c.setFont("Vazirmatn", 14)
     y = 800
-    c.drawString(50, y, f"سفارش مشتری: {name}")
+
+    c.drawRightString(550, y, f"سفارش مشتری: {name}")
     y -= 30
-    c.drawString(50, y, f"شماره تماس: {phone}")
+    c.drawRightString(550, y, f"شماره تماس: {phone}")
     y -= 30
-    c.drawString(50, y, f"شهر: {city}, آدرس: {address}")
+    c.drawRightString(550, y, f"شهر: {city}, آدرس: {address}")
     y -= 50
-    c.drawString(50, y, "محصولات:")
+    c.drawRightString(550, y, "محصولات:")
     y -= 30
 
     total = 0
@@ -47,17 +56,20 @@ def order():
         product = products.get(code)
         if product:
             price = product["price"]
-            c.drawString(60, y, f"{product['name']} - تعداد: {count} - قیمت واحد: {price}")
+            c.drawRightString(550, y, f"{product['name']} - تعداد: {count} - قیمت واحد: {price} تومان")
             total += count * price
             y -= 20
 
-    c.drawString(50, y-20, f"جمع کل: {total} تومان")
+    c.drawRightString(550, y-20, f"جمع کل: {total} تومان")
     c.save()
 
     # ارسال PDF به مدیر از طریق Telegram
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
+
+    # پاک کردن فایل بعد از ارسال
+    os.remove(filename)
 
     return f"✅ سفارش ثبت شد و فاکتور برای مدیر ارسال شد!"
 
