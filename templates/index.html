@@ -2,67 +2,32 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فروشگاه هالستون</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="bg-light">
+<body>
+    <h1>فروشگاه هالستون زنانه</h1>
+    <div id="products">
+        {% for code, product in products.items() %}
+        <div class="product">
+            <img src="{{ product.img }}" alt="{{ product.name }}">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.price }} تومان</p>
+            <input type="number" min="0" value="0" data-code="{{ code }}" class="count">
+        </div>
+        {% endfor %}
+    </div>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-  <div class="container">
-    <a class="navbar-brand" href="#">Halston Shop</a>
-  </div>
-</nav>
-
-<div class="container">
-    <h1 class="mb-4 text-center">فروشگاه پوشاک زنانه هالستون</h1>
-
-    <form action="/order" method="post" class="bg-white p-4 rounded shadow-sm">
-        <h4 class="mb-3">اطلاعات مشتری</h4>
-        <div class="mb-3">
-            <label class="form-label">نام کامل:</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">شماره تماس:</label>
-            <input type="text" name="phone" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">شهر:</label>
-            <input type="text" name="city" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">آدرس:</label>
-            <input type="text" name="address" class="form-control" required>
-        </div>
-
-        <h4 class="mb-3 mt-4">انتخاب محصولات</h4>
-        <div class="row">
-            {% for code, product in products.items() %}
-            <div class="col-md-4 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.price }} تومان</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="order_code" value="{{ code }}">
-                            <label class="form-check-label">انتخاب</label>
-                        </div>
-                        <label class="form-label mt-2">تعداد:</label>
-                        <input type="number" class="form-control" name="order_count" value="1" min="1">
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">ثبت سفارش</button>
-        </div>
+    <h2>فرم سفارش</h2>
+    <form id="orderForm" method="POST" action="/order">
+        <label>نام: <input type="text" name="name" required></label><br>
+        <label>شماره تماس: <input type="text" name="phone" required></label><br>
+        <label>شهر: <input type="text" name="city" required></label><br>
+        <label>آدرس: <input type="text" name="address" required></label><br>
+        <div id="hiddenInputs"></div>
+        <button type="submit">ثبت سفارش</button>
     </form>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 </html>
