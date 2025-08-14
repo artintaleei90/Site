@@ -1,224 +1,125 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <title>فروشگاه پوشاک زنانه</title>
-  <style>
-    body {
-      font-family: Vazirmatn, sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 0;
-      direction: rtl;
-    }
-    header {
-      background: linear-gradient(45deg, #ff4e50, #f9d423);
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .product {
-      background: white;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-    }
-    .product:hover {
-      transform: translateY(-6px);
-    }
-    .product img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .title {
-      font-size: 18px;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-    .price {
-      color: #e91e63;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .qty-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-    .qty-box button {
-      background: #e91e63;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      font-size: 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .qty-box button:hover {
-      background: #c2185b;
-    }
-    .qty-box span {
-      margin: 0 12px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    .add-btn {
-      background: #4caf50;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .add-btn:hover {
-      background: #388e3c;
-    }
-    .cart {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: #fff;
-      padding: 12px 18px;
-      border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      cursor: pointer;
-      font-weight: bold;
-      z-index: 1000;
-    }
-    .cart-items {
-      position: fixed;
-      left: 20px;
-      top: 70px;
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-      display: none;
-      width: 300px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .cart-items h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-      text-align: center;
-    }
-    .checkout {
-      background: #ff9800;
-      color: white;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-    .checkout:hover {
-      background: #e68900;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فروشگاه هالستون</title>
+<style>
+  body {font-family: Tahoma, sans-serif; direction: rtl; margin:0; background:#f0f2f5;}
+  header {background:#232f3e; color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;}
+  header h1 {margin:0; font-size:22px;}
+  header button {background:#febd69; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:0.3s;}
+  header button:hover {background:#f7c871;}
+  .container {max-width:1200px; margin:20px auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; padding:0 10px;}
+  .product-card {background:#fff; padding:16px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center; transition:0.3s; position:relative; overflow:hidden;}
+  .product-card:hover {transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
+  .product-card img {width:100%; height:180px; object-fit:cover; border-radius:8px; transition:0.3s;}
+  .product-card:hover img {transform:scale(1.05);}
+  .product-card h3 {margin:10px 0 6px; font-size:16px; color:#333;}
+  .product-card p {margin:4px 0; color:#555;}
+  .controls {display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px;}
+  .controls button {background:#232f3e; color:#fff; border:none; width:36px; height:36px; border-radius:6px; font-size:18px; cursor:pointer; transition:0.2s;}
+  .controls button:hover {background:#1a2230;}
+  .controls span {min-width:36px; text-align:center; font-weight:bold;}
+  .add-btn {margin-top:10px; background:#28a745; color:#fff; padding:10px 14px; border:none; border-radius:6px; cursor:pointer; transition:0.3s;}
+  .add-btn:hover {background:#34c759;}
+  #cartModal {display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;}
+  #cartContent {background:#fff; width:90%; max-width:540px; border-radius:12px; padding:20px; max-height:90vh; overflow:auto; animation:slideDown 0.4s ease;}
+  @keyframes slideDown {0% {transform:translateY(-30px); opacity:0;} 100% {transform:translateY(0); opacity:1;}}
+  #cartContent h2 {margin-top:0; color:#232f3e;}
+  #cartContent ul {list-style:none; padding:0; margin:0 0 12px 0;}
+  #cartContent li {padding:10px 0; border-bottom:1px solid #eee;}
+  .close {float:left; cursor:pointer; background:#eee; border-radius:6px; padding:4px 8px; transition:0.3s;}
+  .close:hover {background:#ddd;}
+  .submit-btn {background:#232f3e; color:#fff; border:none; padding:12px; width:100%; border-radius:8px; cursor:pointer; margin-top:10px; transition:0.3s;}
+  .submit-btn:hover {background:#1a2230;}
+  input[type="text"], input[type="tel"] {width:100%; padding:10px; margin-top:8px; border-radius:6px; border:1px solid #ccc;}
+</style>
 </head>
 <body>
 
-  <header>🛍 فروشگاه پوشاک زنانه</header>
+<header>
+  <h1>فروشگاه هالستون</h1>
+  <button onclick="openCart()">🛒 سبد خرید (<span id="cartCount">0</span>)</button>
+</header>
 
-  <div class="cart" onclick="toggleCart()">🛒 سبد خرید (<span id="cart-count">0</span>)</div>
+<div class="container">
+  {% for code, product in products.items() %}
+  <div class="product-card" id="card-{{ code }}">
+    <img src="{{ product.image if product.image is defined else 'https://via.placeholder.com/400x300?text=No+Image' }}" alt="{{ product.name }}">
+    <h3>{{ product.name }}</h3>
+    <p>کد: {{ code }}</p>
+    <p style="color:#ff4081; font-weight:bold;">{{ "{:,}".format(product.price) }} تومان</p>
 
-  <div class="cart-items" id="cart-box">
-    <h3>سبد خرید</h3>
-    <ul id="cart-list"></ul>
-    <button class="checkout" onclick="checkout()">نهایی‌سازی و دریافت فاکتور</button>
+    <div class="controls">
+      <button onclick="decrease('{{ code }}')">-</button>
+      <span id="qty-{{ code }}">0</span>
+      <button onclick="increase('{{ code }}')">+</button>
+    </div>
+
+    <button class="add-btn" onclick="addToCartFromCard('{{ code }}')">افزودن به سبد</button>
   </div>
+  {% endfor %}
+</div>
 
-  <div class="container" id="products"></div>
+<!-- modal سبد خرید -->
+<div id="cartModal">
+  <div id="cartContent">
+    <span class="close" onclick="closeCart()">بستن ✖</span>
+    <h2>سبد خرید</h2>
+    <ul id="cartItems"></ul>
+    <p>جمع کل: <strong id="cartTotal">0</strong> تومان</p>
+    <input id="customerName" type="text" placeholder="نام و نام خانوادگی">
+    <input id="customerPhone" type="tel" placeholder="شماره تماس">
+    <input id="customerAddress" type="text" placeholder="آدرس کامل">
+    <button class="submit-btn" onclick="submitOrder()">ثبت سفارش و دریافت فاکتور</button>
+  </div>
+</div>
 
-  <script>
-    const products = [
-      {id:1, name:"پیراهن گلدار", price:250000, img:"https://via.placeholder.com/200"},
-      {id:2, name:"شلوار جین", price:350000, img:"https://via.placeholder.com/200"},
-      {id:3, name:"مانتو تابستانی", price:550000, img:"https://via.placeholder.com/200"},
-      {id:4, name:"کت تک", price:750000, img:"https://via.placeholder.com/200"}
-    ];
-
-    let cart = [];
-
-    function renderProducts() {
-      const container = document.getElementById("products");
-      products.forEach(p => {
-        container.innerHTML += `
-          <div class="product">
-            <img src="${p.img}" alt="${p.name}">
-            <div class="title">${p.name}</div>
-            <div class="price">${p.price.toLocaleString()} تومان</div>
-            <div class="qty-box">
-              <button onclick="changeQty(${p.id}, -1)">-</button>
-              <span id="qty-${p.id}">1</span>
-              <button onclick="changeQty(${p.id}, 1)">+</button>
-            </div>
-            <button class="add-btn" onclick="addToCart(${p.id})">➕ افزودن به سبد</button>
-          </div>
-        `;
-      });
-    }
-
-    function changeQty(id, delta) {
-      let qtyEl = document.getElementById(`qty-${id}`);
-      let current = parseInt(qtyEl.innerText);
-      let next = current + delta;
-      if (next < 1) next = 1;
-      qtyEl.innerText = next;
-    }
-
-    function addToCart(id) {
-      let qty = parseInt(document.getElementById(`qty-${id}`).innerText);
-      let product = products.find(p => p.id === id);
-      let item = cart.find(c => c.id === id);
-      if (item) {
-        item.qty += qty;
-      } else {
-        cart.push({...product, qty: qty});
-      }
-      updateCart();
-    }
-
-    function updateCart() {
-      document.getElementById("cart-count").innerText = cart.reduce((a,c)=>a+c.qty,0);
-      let list = document.getElementById("cart-list");
-      list.innerHTML = "";
-      cart.forEach(item => {
-        list.innerHTML += `<li>${item.name} × ${item.qty} = ${(item.price*item.qty).toLocaleString()} تومان</li>`;
-      });
-    }
-
-    function toggleCart() {
-      let box = document.getElementById("cart-box");
-      box.style.display = (box.style.display === "block") ? "none" : "block";
-    }
-
-    function checkout() {
-      alert("✅ سفارش شما ثبت شد!\nبه زودی فاکتور PDF به شماره شما ارسال می‌شود.");
-      cart = [];
-      updateCart();
-      toggleCart();
-    }
-
-    renderProducts();
-  </script>
-
+<script>
+let cart = [];
+function increase(code){const q=document.getElementById('qty-'+code);q.textContent=parseInt(q.textContent)||0+1;}
+function decrease(code){const q=document.getElementById('qty-'+code);let v=parseInt(q.textContent)||0;if(v>0) q.textContent=v-1;}
+function addToCartFromCard(code){
+  const q=document.getElementById('qty-'+code);let quantity=parseInt(q.textContent)||0;if(quantity<=0){alert('لطفاً تعداد را انتخاب کنید');return;}
+  const card=document.getElementById('card-'+code);const name=card.querySelector('h3').innerText;
+  const price=parseInt(card.querySelector('p[style]').innerText.replace(/[^0-9]/g,''))||0;
+  let existing=cart.find(i=>i.code===code);if(existing) existing.count+=quantity; else cart.push({code,name,price,count:quantity});
+  q.textContent=0;updateCartIndicator();alert('محصول به سبد اضافه شد ✅');
+}
+function updateCartIndicator(){document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.count,0);}
+function openCart(){renderCart();document.getElementById('cartModal').style.display='flex';}
+function closeCart(){document.getElementById('cartModal').style.display='none';}
+function renderCart(){
+  const ul=document.getElementById('cartItems');ul.innerHTML='';let total=0;
+  cart.forEach((item,idx)=>{total+=item.price*item.count;
+    const li=document.createElement('li');
+    li.innerHTML=`<div><strong>${item.name}</strong><br>کد: ${item.code} — ${item.price.toLocaleString()} تومان × ${item.count}<br>
+    <button onclick="cartDecrease(${idx})">-</button>
+    <button onclick="cartIncrease(${idx})">+</button>
+    <button onclick="cartRemove(${idx})">حذف</button>
+    </div>`;
+    ul.appendChild(li);
+  });
+  document.getElementById('cartTotal').innerText=total.toLocaleString();
+}
+function cartIncrease(i){cart[i].count++;renderCart();updateCartIndicator();}
+function cartDecrease(i){if(cart[i].count>1) cart[i].count--;else cart.splice(i,1);renderCart();updateCartIndicator();}
+function cartRemove(i){cart.splice(i,1);renderCart();updateCartIndicator();}
+function submitOrder(){
+  if(!cart.length){alert('سبد خرید خالی است');return;}
+  const name=document.getElementById('customerName').value.trim();
+  const phone=document.getElementById('customerPhone').value.trim();
+  const address=document.getElementById('customerAddress').value.trim();
+  if(!name||!phone||!address){alert('لطفاً مشخصات را کامل کنید');return;}
+  const form=document.createElement('form');form.method='POST';form.action='/order';
+  cart.forEach(item=>{const c=document.createElement('input');c.type='hidden';c.name='order_code';c.value=item.code;form.appendChild(c);
+  const cnt=document.createElement('input');cnt.type='hidden';cnt.name='order_count';cnt.value=item.count;form.appendChild(cnt);});
+  const n=document.createElement('input');n.type='hidden';n.name='name';n.value=name;form.appendChild(n);
+  const p=document.createElement('input');p.type='hidden';p.name='phone';p.value=phone;form.appendChild(p);
+  const a=document.createElement('input');a.type='hidden';a.name='address';a.value=address;form.appendChild(a);
+  document.body.appendChild(form);form.submit();
+}
+</script>
 </body>
 </html>
