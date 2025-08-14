@@ -78,7 +78,10 @@
 
 <script>
 let cart = [];
-function increase(code){const q=document.getElementById('qty-'+code);q.textContent=parseInt(q.textContent)||0+1;}
+function increase(code){
+  const q = document.getElementById('qty-'+code);
+  q.textContent = (parseInt(q.textContent) || 0) + 1;
+}
 function decrease(code){const q=document.getElementById('qty-'+code);let v=parseInt(q.textContent)||0;if(v>0) q.textContent=v-1;}
 function addToCartFromCard(code){
   const q=document.getElementById('qty-'+code);let quantity=parseInt(q.textContent)||0;if(quantity<=0){alert('لطفاً تعداد را انتخاب کنید');return;}
