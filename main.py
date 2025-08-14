@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 # ---------------------- محصولات ----------------------
 products = {
+    
     "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
     "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
     "1303": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر به جز سبز", "price": 747000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0396.jpeg"},
@@ -74,7 +75,7 @@ products = {
 
 # اطلاعات مدیر برای ارسال PDF
 ADMIN_CHAT_ID = 6933858510
-TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
+TELEGRAM_TOKEN ="7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
 FONT_PATH = "Vazirmatn-Regular.ttf"
@@ -152,18 +153,21 @@ def order():
     table.drawOn(c, 2*cm, y - len(table_data)*1.2*cm)
     y -= (len(table_data)*1.2*cm + 1*cm)
 
-    # جمع کل و توضیحات پرداخت
+    # جمع کل
     c.drawRightString(width - 2*cm, y, reshape_text(f"جمع کل: {total} تومان"))
     y -= 1*cm
-    bank_info_lines = [
-    "بانک سامان",
-    "به نام: آزیتا فتوحی مظفرنژاد",
-    "شماره کارت: 6219-8610-6509-3089",
-    "شماره شبا: IR44 0560 0832 8007 8294 0100 01"
-]
 
+    # اطلاعات پرداخت
+    bank_info_lines = [
+        "بانک سامان",
+        "به نام: آزیتا فتوحی مظفرنژاد",
+        "شماره کارت: 6219-8610-6509-3089",
+        "شماره شبا: IR44 0560 0832 8007 8294 0100 01"
+    ]
     c.setFont("Vazir", 10)
-    c.drawRightString(width - 2*cm, y, reshape_text(payment_text))
+    for line in bank_info_lines:
+        c.drawRightString(width - 2*cm, y, reshape_text(line))
+        y -= 0.8*cm
 
     c.save()
 
