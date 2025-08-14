@@ -13,11 +13,11 @@ import os
 
 app = Flask(__name__)
 
-# محصولات نمونه
+# ---------------------- محصولات ----------------------
 products = {
-    "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
-    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
-    "1303": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر به جز سبز", "price": 747000, "unit": "هزار تومان","image" : "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0396.jpeg"},
+    "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
+    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
+    "1303": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر به جز سبز", "price": 747000, "unit": "هزار تومان","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0396.jpeg"},
     "3389": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر (مانتو کتی)", "price": 797000, "unit": "هزار تومان"},
     "1106": {"name": "فری سایز - دو طرح رنگ: در تصویر", "price": 397000, "unit": "هزار تومان"},
     "1203": {"name": "فری سایز - پک 6 عددی رنگ: سفید", "price": 547000, "unit": "هزار تومان"},
@@ -69,7 +69,7 @@ products = {
     "1112": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر", "price": 597000, "unit": "هزار تومان"},
     "3393": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 597000, "unit": "هزار تومان"},
     "1115": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 547000, "unit": "هزار تومان"},
-    "1118": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان"},
+    "1118": {"name": "فری سایز - پک 4 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان"}
 }
 
 # اطلاعات مدیر برای ارسال PDF
@@ -85,10 +85,12 @@ pdfmetrics.registerFont(TTFont('Vazir', FONT_PATH))
 def reshape_text(text):
     return get_display(arabic_reshaper.reshape(text))
 
+# ---------------------- روت اصلی ----------------------
 @app.route('/')
 def index():
     return render_template("index.html", products=products)
 
+# ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
 def order():
     name = request.form.get("name")
@@ -97,16 +99,17 @@ def order():
     order_codes = request.form.getlist("order_code")
     order_counts = request.form.getlist("order_count")
 
-    # فایل PDF
     filename = f"invoice_{phone}.pdf"
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
     y_start = height - 2*cm
 
+    # عنوان فاکتور
     c.setFont("Vazir", 16)
     c.drawCentredString(width/2, y_start, reshape_text("🧾 فاکتور سفارش"))
     y = y_start - 2*cm
 
+    # اطلاعات مشتری
     c.setFont("Vazir", 12)
     c.drawRightString(width - 2*cm, y, reshape_text(f"نام مشتری: {name}"))
     y -= 1*cm
@@ -135,7 +138,6 @@ def order():
                 reshape_text(str(sum_price))
             ])
 
-    from reportlab.platypus import Table, TableStyle
     table = Table(table_data, colWidths=[3*cm, 7*cm, 2*cm, 3*cm, 3*cm])
     style = TableStyle([
         ('GRID', (0,0), (-1,-1), 1, colors.black),
@@ -146,24 +148,20 @@ def order():
         ('BOTTOMPADDING', (0,0), (-1,0), 12),
     ])
     table.setStyle(style)
-
     table.wrapOn(c, width, height)
     table.drawOn(c, 2*cm, y - len(table_data)*1.2*cm)
     y -= (len(table_data)*1.2*cm + 1*cm)
 
+    # جمع کل و توضیحات پرداخت
     c.drawRightString(width - 2*cm, y, reshape_text(f"جمع کل: {total} تومان"))
-    bank_text = [
-    "💳 بانک سامان - آزیتا فتوحی مظفرنژاد",
-    "6219-8610-6509-3089 IR440560083280078294010001",
-    "واریز وجه تنها به شماره کارت های دریافتی از شماره تماس 09128883343 دارای اعتبار می باشد.",
-    "همکار گرامی تنها پس از تایید وجه در بانک مقصد، امکان خروجی از انبار میسر است.",
-    "لذا خواهشمندیم نسبت به انتقال وجه به صورت کارت به کارت، شبا، پایا ... توجه فرمایید."
-]
+    y -= 1*cm
+    payment_text = ("بانک سامان - آزیتا فتوحی مظفرنژاد 6219-8610-6509-3089 "
+                    "IR440560083280078294010001. واریز وجه تنها به شماره کارت های دریافتی از شماره تماس 09128883343 دارای اعتبار می باشد. "
+                    "همکار گرامی تنها پس از تایید وجه در بانک مقصد، امکان خروجی از انبار میسر است. "
+                    "لذا خواهشمندیم نسبت به انتقال وجه به صورت کارت به کارت، شبا، پایا ... توجه فرمایید.")
+    c.setFont("Vazir", 10)
+    c.drawRightString(width - 2*cm, y, reshape_text(payment_text))
 
-y -= 1*cm  # پایین‌تر از جمع کل
-for line in bank_text:
-    c.drawRightString(width - 2*cm, y, reshape_text(line))
-    y -= 0.8*cm
     c.save()
 
     # ارسال PDF به مدیر
