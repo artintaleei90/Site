@@ -1,128 +1,113 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>فروشگاه هالستون</title>
-<style>
-  body {font-family: Tahoma, sans-serif; direction: rtl; margin:0; background:#f0f2f5;}
-  header {background:#232f3e; color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center;}
-  header h1 {margin:0; font-size:22px;}
-  header button {background:#febd69; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:0.3s;}
-  header button:hover {background:#f7c871;}
-  .container {max-width:1200px; margin:20px auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; padding:0 10px;}
-  .product-card {background:#fff; padding:16px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center; transition:0.3s; position:relative; overflow:hidden;}
-  .product-card:hover {transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
-  .product-card img {width:100%; height:180px; object-fit:cover; border-radius:8px; transition:0.3s;}
-  .product-card:hover img {transform:scale(1.05);}
-  .product-card h3 {margin:10px 0 6px; font-size:16px; color:#333;}
-  .product-card p {margin:4px 0; color:#555;}
-  .controls {display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px;}
-  .controls button {background:#232f3e; color:#fff; border:none; width:36px; height:36px; border-radius:6px; font-size:18px; cursor:pointer; transition:0.2s;}
-  .controls button:hover {background:#1a2230;}
-  .controls span {min-width:36px; text-align:center; font-weight:bold;}
-  .add-btn {margin-top:10px; background:#28a745; color:#fff; padding:10px 14px; border:none; border-radius:6px; cursor:pointer; transition:0.3s;}
-  .add-btn:hover {background:#34c759;}
-  #cartModal {display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;}
-  #cartContent {background:#fff; width:90%; max-width:540px; border-radius:12px; padding:20px; max-height:90vh; overflow:auto; animation:slideDown 0.4s ease;}
-  @keyframes slideDown {0% {transform:translateY(-30px); opacity:0;} 100% {transform:translateY(0); opacity:1;}}
-  #cartContent h2 {margin-top:0; color:#232f3e;}
-  #cartContent ul {list-style:none; padding:0; margin:0 0 12px 0;}
-  #cartContent li {padding:10px 0; border-bottom:1px solid #eee;}
-  .close {float:left; cursor:pointer; background:#eee; border-radius:6px; padding:4px 8px; transition:0.3s;}
-  .close:hover {background:#ddd;}
-  .submit-btn {background:#232f3e; color:#fff; border:none; padding:12px; width:100%; border-radius:8px; cursor:pointer; margin-top:10px; transition:0.3s;}
-  .submit-btn:hover {background:#1a2230;}
-  input[type="text"], input[type="tel"] {width:100%; padding:10px; margin-top:8px; border-radius:6px; border:1px solid #ccc;}
-</style>
+<meta name="description" content="فروشگاه آنلاین هالستون | پوشاک زنانه و مردانه">
+<title>هالستون | فروشگاه پوشاک</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="images/logo.png" type="image/png">
 </head>
 <body>
 
+<!-- نوار اطلاع‌رسانی -->
+<div class="topbar">
+    🎉 ارسال رایگان برای سفارش‌های بالای 500 هزار تومان 🎉
+</div>
+
+<!-- هدر -->
 <header>
-  <h1>فروشگاه هالستون</h1>
-  <button onclick="openCart()">🛒 سبد خرید (<span id="cartCount">0</span>)</button>
+<div class="container header-wrap">
+    <div class="logo">HALSTON</div>
+    <nav>
+        <ul class="menu">
+            <li><a href="#">خانه</a></li>
+            <li class="dropdown">
+                <a href="#">پوشاک زنانه</a>
+                <ul class="submenu">
+                    <li><a href="#">مانتو</a></li>
+                    <li><a href="#">شومیز</a></li>
+                    <li><a href="#">شلوار</a></li>
+                    <li><a href="#">ست راحتی</a></li>
+                </ul>
+            </li>
+            <li><a href="#">پوشاک مردانه</a></li>
+            <li><a href="#">تخفیف‌ها</a></li>
+            <li><a href="#">تماس با ما</a></li>
+        </ul>
+    </nav>
+    <div class="actions">
+        <input type="text" id="search" placeholder="جستجوی محصول...">
+        <button id="cart-btn">🛒</button>
+    </div>
+</div>
 </header>
 
-<div class="container">
-  {% for code, product in products.items() %}
-  <div class="product-card" id="card-{{ code }}">
-    <img src="{{ product.image if product.image is defined else 'https://via.placeholder.com/400x300?text=No+Image' }}" alt="{{ product.name }}">
-    <h3>{{ product.name }}</h3>
-    <p>کد: {{ code }}</p>
-    <p style="color:#ff4081; font-weight:bold;">{{ "{:,}".format(product.price) }} تومان</p>
-
-    <div class="controls">
-      <button onclick="decrease('{{ code }}')">-</button>
-      <span id="qty-{{ code }}">0</span>
-      <button onclick="increase('{{ code }}')">+</button>
+<!-- اسلایدر -->
+<section class="hero-slider">
+    <div class="slide active">
+        <img src="images/banner1.jpg" alt="بنر 1">
+        <div class="caption">
+            <h1>کالکشن جدید تابستان 2025</h1>
+            <p>جدیدترین مانتوها و شومیزها</p>
+            <a href="#" class="btn-primary">خرید کنید</a>
+        </div>
     </div>
+    <div class="slide">
+        <img src="images/banner2.jpg" alt="بنر 2">
+        <div class="caption">
+            <h1>تخفیف‌های شگفت‌انگیز</h1>
+            <p>تا 50% تخفیف ویژه</p>
+            <a href="#" class="btn-primary">مشاهده محصولات</a>
+        </div>
+    </div>
+</section>
 
-    <button class="add-btn" onclick="addToCartFromCard('{{ code }}')">افزودن به سبد</button>
-  </div>
-  {% endfor %}
+<!-- محصولات ویژه -->
+<section class="products-section">
+    <h2>محصولات ویژه</h2>
+    <div class="products-grid" id="products">
+        <!-- محصولات با JS لود می‌شوند -->
+    </div>
+</section>
+
+<!-- خبرنامه -->
+<section class="newsletter">
+    <h3>عضویت در خبرنامه</h3>
+    <p>اولین نفری باشید که از تخفیف‌های جدید باخبر می‌شوید</p>
+    <form id="newsletter-form">
+        <input type="email" placeholder="ایمیل خود را وارد کنید" required>
+        <button type="submit">عضویت</button>
+    </form>
+</section>
+
+<!-- فوتر -->
+<footer>
+<div class="container footer-wrap">
+    <div>
+        <h4>هالستون</h4>
+        <p>بهترین فروشگاه آنلاین پوشاک زنانه و مردانه</p>
+    </div>
+    <div>
+        <h4>لینک‌های مفید</h4>
+        <ul>
+            <li><a href="#">درباره ما</a></li>
+            <li><a href="#">سوالات متداول</a></li>
+            <li><a href="#">قوانین و مقررات</a></li>
+        </ul>
+    </div>
+    <div>
+        <h4>ما را دنبال کنید</h4>
+        <div class="socials">
+            <a href="#">📸</a>
+            <a href="#">📘</a>
+            <a href="#">📱</a>
+        </div>
+    </div>
 </div>
+<p class="copyright">© 2025 هالستون. تمامی حقوق محفوظ است.</p>
+</footer>
 
-<!-- modal سبد خرید -->
-<div id="cartModal">
-  <div id="cartContent">
-    <span class="close" onclick="closeCart()">بستن ✖</span>
-    <h2>سبد خرید</h2>
-    <ul id="cartItems"></ul>
-    <p>جمع کل: <strong id="cartTotal">0</strong> تومان</p>
-    <input id="customerName" type="text" placeholder="نام و نام خانوادگی">
-    <input id="customerPhone" type="tel" placeholder="شماره تماس">
-    <input id="customerAddress" type="text" placeholder="آدرس کامل">
-    <button class="submit-btn" onclick="submitOrder()">ثبت سفارش و دریافت فاکتور</button>
-  </div>
-</div>
-
-<script>
-let cart = [];
-function increase(code){
-  const q = document.getElementById('qty-'+code);
-  q.textContent = (parseInt(q.textContent) || 0) + 1;
-}
-function decrease(code){const q=document.getElementById('qty-'+code);let v=parseInt(q.textContent)||0;if(v>0) q.textContent=v-1;}
-function addToCartFromCard(code){
-  const q=document.getElementById('qty-'+code);let quantity=parseInt(q.textContent)||0;if(quantity<=0){alert('لطفاً تعداد را انتخاب کنید');return;}
-  const card=document.getElementById('card-'+code);const name=card.querySelector('h3').innerText;
-  const price=parseInt(card.querySelector('p[style]').innerText.replace(/[^0-9]/g,''))||0;
-  let existing=cart.find(i=>i.code===code);if(existing) existing.count+=quantity; else cart.push({code,name,price,count:quantity});
-  q.textContent=0;updateCartIndicator();alert('محصول به سبد اضافه شد ✅');
-}
-function updateCartIndicator(){document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.count,0);}
-function openCart(){renderCart();document.getElementById('cartModal').style.display='flex';}
-function closeCart(){document.getElementById('cartModal').style.display='none';}
-function renderCart(){
-  const ul=document.getElementById('cartItems');ul.innerHTML='';let total=0;
-  cart.forEach((item,idx)=>{total+=item.price*item.count;
-    const li=document.createElement('li');
-    li.innerHTML=`<div><strong>${item.name}</strong><br>کد: ${item.code} — ${item.price.toLocaleString()} تومان × ${item.count}<br>
-    <button onclick="cartDecrease(${idx})">-</button>
-    <button onclick="cartIncrease(${idx})">+</button>
-    <button onclick="cartRemove(${idx})">حذف</button>
-    </div>`;
-    ul.appendChild(li);
-  });
-  document.getElementById('cartTotal').innerText=total.toLocaleString();
-}
-function cartIncrease(i){cart[i].count++;renderCart();updateCartIndicator();}
-function cartDecrease(i){if(cart[i].count>1) cart[i].count--;else cart.splice(i,1);renderCart();updateCartIndicator();}
-function cartRemove(i){cart.splice(i,1);renderCart();updateCartIndicator();}
-function submitOrder(){
-  if(!cart.length){alert('سبد خرید خالی است');return;}
-  const name=document.getElementById('customerName').value.trim();
-  const phone=document.getElementById('customerPhone').value.trim();
-  const address=document.getElementById('customerAddress').value.trim();
-  if(!name||!phone||!address){alert('لطفاً مشخصات را کامل کنید');return;}
-  const form=document.createElement('form');form.method='POST';form.action='/order';
-  cart.forEach(item=>{const c=document.createElement('input');c.type='hidden';c.name='order_code';c.value=item.code;form.appendChild(c);
-  const cnt=document.createElement('input');cnt.type='hidden';cnt.name='order_count';cnt.value=item.count;form.appendChild(cnt);});
-  const n=document.createElement('input');n.type='hidden';n.name='name';n.value=name;form.appendChild(n);
-  const p=document.createElement('input');p.type='hidden';p.name='phone';p.value=phone;form.appendChild(p);
-  const a=document.createElement('input');a.type='hidden';a.name='address';a.value=address;form.appendChild(a);
-  document.body.appendChild(form);form.submit();
-}
-</script>
+<script src="script.js"></script>
 </body>
 </html>
