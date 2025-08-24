@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="فروشگاه آنلاین هالستون | پوشاک زنانه و مردانه">
 <title>هالستون | فروشگاه پوشاک</title>
-<link rel="stylesheet" href="style.css">
-<link rel="icon" href="images/logo.png" type="image/png">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
@@ -43,10 +42,9 @@
 </div>
 </header>
 
-<!-- اسلایدر -->
+<!-- اسلایدر ساده (بدون عکس) -->
 <section class="hero-slider">
     <div class="slide active">
-        <img src="images/banner1.jpg" alt="بنر 1">
         <div class="caption">
             <h1>کالکشن جدید تابستان 2025</h1>
             <p>جدیدترین مانتوها و شومیزها</p>
@@ -54,7 +52,6 @@
         </div>
     </div>
     <div class="slide">
-        <img src="images/banner2.jpg" alt="بنر 2">
         <div class="caption">
             <h1>تخفیف‌های شگفت‌انگیز</h1>
             <p>تا 50% تخفیف ویژه</p>
@@ -108,6 +105,6 @@
 <p class="copyright">© 2025 هالستون. تمامی حقوق محفوظ است.</p>
 </footer>
 
-<script src="script.js"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
