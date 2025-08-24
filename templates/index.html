@@ -45,6 +45,7 @@
             <h3>{{ product.name }}</h3>
             <p>{{ product.price }} تومان</p>
             <a href="/product/{{ product.id }}">مشاهده محصول</a>
+            <button onclick="addToCart('{{ product.name }}')">افزودن به سبد خرید</button>
         </div>
         {% endfor %}
     </div>
