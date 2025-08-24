@@ -3,108 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="فروشگاه آنلاین هالستون | پوشاک زنانه و مردانه">
-<title>هالستون | فروشگاه پوشاک</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>هالستون | صفحه اصلی</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-
-<!-- نوار اطلاع‌رسانی -->
-<div class="topbar">
-    🎉 ارسال رایگان برای سفارش‌های بالای 500 هزار تومان 🎉
-</div>
-
-<!-- هدر -->
 <header>
-<div class="container header-wrap">
     <div class="logo">HALSTON</div>
     <nav>
-        <ul class="menu">
-            <li><a href="#">خانه</a></li>
-            <li class="dropdown">
-                <a href="#">پوشاک زنانه</a>
-                <ul class="submenu">
-                    <li><a href="#">مانتو</a></li>
-                    <li><a href="#">شومیز</a></li>
-                    <li><a href="#">شلوار</a></li>
-                    <li><a href="#">ست راحتی</a></li>
-                </ul>
-            </li>
-            <li><a href="#">پوشاک مردانه</a></li>
-            <li><a href="#">تخفیف‌ها</a></li>
-            <li><a href="#">تماس با ما</a></li>
+        <ul>
+            <li><a href="/">خانه</a></li>
+            <li><a href="/category/women">زنانه</a></li>
+            <li><a href="/category/men">مردانه</a></li>
+            <li><a href="/category/kids">بچگانه</a></li>
+            <li><a href="/contact">تماس با ما</a></li>
         </ul>
     </nav>
-    <div class="actions">
-        <input type="text" id="search" placeholder="جستجوی محصول...">
-        <button id="cart-btn">🛒</button>
-    </div>
-</div>
 </header>
 
-<!-- اسلایدر ساده (بدون عکس) -->
-<section class="hero-slider">
-    <div class="slide active">
-        <div class="caption">
-            <h1>کالکشن جدید تابستان 2025</h1>
-            <p>جدیدترین مانتوها و شومیزها</p>
-            <a href="#" class="btn-primary">خرید کنید</a>
-        </div>
-    </div>
-    <div class="slide">
-        <div class="caption">
-            <h1>تخفیف‌های شگفت‌انگیز</h1>
-            <p>تا 50% تخفیف ویژه</p>
-            <a href="#" class="btn-primary">مشاهده محصولات</a>
-        </div>
-    </div>
+<section class="banner">
+    <h1>کالکشن جدید تابستان 2025</h1>
+    <p>جدیدترین محصولات با بهترین کیفیت</p>
 </section>
 
-<!-- محصولات ویژه -->
-<section class="products-section">
+<section class="products">
     <h2>محصولات ویژه</h2>
-    <div class="products-grid" id="products">
-        <!-- محصولات با JS لود می‌شوند -->
-    </div>
-</section>
-
-<!-- خبرنامه -->
-<section class="newsletter">
-    <h3>عضویت در خبرنامه</h3>
-    <p>اولین نفری باشید که از تخفیف‌های جدید باخبر می‌شوید</p>
-    <form id="newsletter-form">
-        <input type="email" placeholder="ایمیل خود را وارد کنید" required>
-        <button type="submit">عضویت</button>
-    </form>
-</section>
-
-<!-- فوتر -->
-<footer>
-<div class="container footer-wrap">
-    <div>
-        <h4>هالستون</h4>
-        <p>بهترین فروشگاه آنلاین پوشاک زنانه و مردانه</p>
-    </div>
-    <div>
-        <h4>لینک‌های مفید</h4>
-        <ul>
-            <li><a href="#">درباره ما</a></li>
-            <li><a href="#">سوالات متداول</a></li>
-            <li><a href="#">قوانین و مقررات</a></li>
-        </ul>
-    </div>
-    <div>
-        <h4>ما را دنبال کنید</h4>
-        <div class="socials">
-            <a href="#">📸</a>
-            <a href="#">📘</a>
-            <a href="#">📱</a>
+    <div class="product-list">
+        {% for product in products %}
+        <div class="product-item">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.price }} تومان</p>
+            <a href="/product/{{ product.id }}">مشاهده محصول</a>
         </div>
+        {% endfor %}
     </div>
-</div>
-<p class="copyright">© 2025 هالستون. تمامی حقوق محفوظ است.</p>
-</footer>
+</section>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<footer>
+<p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
+</footer>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
