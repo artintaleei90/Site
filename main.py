@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, abort
+from flask import Flask, render_template, request, send_file, send_from_directory
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -15,22 +15,8 @@ app = Flask(__name__)
 
 # ---------------------- محصولات ----------------------
 products = {
-    "3390": {
-        "id": "3390",
-        "name": "فری سایز - پک 6 عددی رنگ: در تصویر",
-        "price": 697000,
-        "unit": "هزار تومان",
-        "category": "women",
-        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"
-    },
-    "1107": {
-        "id": "1107",
-        "name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی",
-        "price": 547000,
-        "unit": "هزار تومان",
-        "category": "women",
-        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"
-    },
+    "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
+    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
 }
 
 # اطلاعات مدیر برای ارسال PDF
@@ -47,31 +33,27 @@ def reshape_text(text):
     return get_display(arabic_reshaper.reshape(text))
 
 # ---------------------- روت اصلی ----------------------
-@app.route('/<filename>.html')
-def google_verify(filename):
-    return send_from_directory(os.getcwd(), f"{filename}.html")
 @app.route('/')
 def index():
     return render_template("index.html", products=products)
 
-# ---------------------- روت تماس با ما ----------------------
 @app.route('/contact')
 def contact():
     return "<h1>تماس با ما</h1><p>شماره تماس: 0912xxxxxxx</p>"
 
-# ---------------------- دسته‌بندی محصولات ----------------------
 @app.route('/category/<category_name>')
 def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
     return render_template("index.html", products=filtered_products)
 
-# ---------------------- صفحه جزئیات محصول ----------------------
-@app.route('/product/<product_id>')
-def product_page(product_id):
-    product = products.get(product_id)
-    if not product:
-        abort(404)
-    return render_template("product_page.html", product=product)
+# ---------------------- تایید گوگل ----------------------
+# توجه: قبلش فایل HTML که گوگل داده رو داخل ریشه پروژه قرار بده، مثلا: google12345abcde.html
+@app.route('googlef45b12f9e985ca0c.html')
+def google_verify(code):
+    filename = f"google{code}.html"
+    if os.path.exists(filename):
+        return send_from_directory(os.getcwd(), filename)
+    return "فایل تایید گوگل پیدا نشد.", 404
 
 # ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
@@ -140,7 +122,7 @@ def order():
     y -= 1*cm
 
     # اطلاعات پرداخت
-    bank_info_lines = [    
+    bank_info_lines = [
         "شماره :۰۹۱۲۸۸۸۳۳۴۳(واتساپ)",
         "فاکتور رو برای شماره بالا ارسال و نهایی کنید",
         "بانک سامان",
@@ -155,7 +137,7 @@ def order():
 
     c.save()
 
-    # ارسال PDF به مدیر تلگرام
+    # ارسال PDF به مدیر
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
