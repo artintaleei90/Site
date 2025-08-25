@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>هالستون | صفحه اصلی</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هالستون | صفحه اصلی</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header>
@@ -18,7 +18,19 @@
             <li><a href="/contact">تماس با ما</a></li>
         </ul>
     </nav>
+
+    <!-- سبد خرید بالا سمت چپ -->
+    <div class="cart-icon" onclick="toggleCart()">
+        🛒 <span id="cart-count">0</span>
+    </div>
 </header>
+
+<!-- پاپ‌آپ سبد خرید -->
+<div id="cart-popup" class="cart-popup hidden">
+    <h3>سبد خرید شما</h3>
+    <div id="cart-items"></div>
+    <button onclick="goToCart()" class="btn-primary">مشاهده سبد خرید</button>
+</div>
 
 <section class="banner">
     <div class="slide active">
@@ -41,18 +53,20 @@
     <h2>محصولات ویژه</h2>
     <div class="product-list">
         {% for product in products %}
-        <div class="product-item">
+        <div class="product-item" onclick="goToProduct('{{ product.id }}')">
+            <img src="{{ product.image }}" alt="{{ product.name }}">
             <h3>{{ product.name }}</h3>
             <p>{{ product.price }} تومان</p>
-            <a href="/product/{{ product.id }}">مشاهده محصول</a>
-            <button onclick="addToCart('{{ product.name }}')">افزودن به سبد خرید</button>
+            <button onclick="event.stopPropagation(); addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{ product.image }}')">
+                افزودن به سبد خرید
+            </button>
         </div>
         {% endfor %}
     </div>
 </section>
 
 <footer>
-<p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
+    <p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
 </footer>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
