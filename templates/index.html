@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>هالستون — صفحه اصلی</title>
+    <title>هالستون | فروشگاه اینترنتی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #e52733;
+            --secondary-color: #333;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,188 +22,227 @@
         }
         
         body {
-            background-color: #f8f9fa;
+            background-color: #fff;
             color: #333;
             line-height: 1.6;
         }
         
-        .header-inner {
+        /* هدر */
+        .top-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        .top-header-container {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background-color: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .top-header-contact a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        
+        .main-header {
+            background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
         
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
         .logo {
-            font-size: 1.8rem;
+            font-size: 24px;
             font-weight: bold;
-            color: #333;
+            color: var(--primary-color);
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .search-bar button {
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .header-icon {
+            position: relative;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* منوی اصلی */
+        .main-nav {
+            background-color: var(--primary-color);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
         
         .main-nav ul {
             display: flex;
             list-style: none;
-            gap: 2rem;
+        }
+        
+        .main-nav li {
+            position: relative;
         }
         
         .main-nav a {
+            display: block;
+            color: white;
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 0;
-            position: relative;
+            padding: 12px 20px;
+            transition: background-color 0.3s;
         }
         
         .main-nav a:hover {
-            color: #6c757d;
+            background-color: rgba(0, 0, 0, 0.1);
         }
         
-        .main-nav a::after {
-            content: '';
+        /* اسلایدر */
+        .hero-slider {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+        
+        .hero-slide {
             position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            right: 0;
-            background-color: #6c757d;
-            transition: width 0.3s;
-        }
-        
-        .main-nav a:hover::after {
+            top: 0;
+            left: 0;
             width: 100%;
-        }
-        
-        .cart-wrapper {
-            position: relative;
-        }
-        
-        .cart-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        #cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
             display: flex;
-            justify-content: center;
             align-items: center;
         }
         
-        .cart-popup {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 300px;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-radius: 8px;
-            padding: 1rem;
-            z-index: 1001;
-            margin-top: 10px;
+        .hero-slide.active {
+            opacity: 1;
         }
         
-        .hidden {
-            display: none;
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
         
-        .cart-items {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
+        .slide-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
         }
         
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .cart-footer {
-            border-top: 1px solid #eee;
-            padding-top: 1rem;
-        }
-        
-        .cart-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.5rem;
+        .slide-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
         }
         
         .btn {
-            padding: 0.5rem 1rem;
-            border: none;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
             border-radius: 4px;
-            cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: background-color 0.3s;
         }
         
-        .btn.small {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
+        .btn:hover {
+            background-color: #c41f29;
         }
         
-        .btn.primary {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .btn.primary:hover {
-            background-color: #5a6268;
-        }
-        
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d');
-            background-size: cover;
-            background-position: center;
-            height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            padding: 0 1rem;
-        }
-        
-        .hero-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
+        /* بخش محصولات */
         .products-section {
-            padding: 3rem 2rem;
+            padding: 40px 0;
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        .products-section h2 {
+        .section-title {
             text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
         }
         
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
+            gap: 20px;
         }
         
         .product-card {
@@ -203,11 +251,24 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
         }
         
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            z-index: 10;
         }
         
         .product-image {
@@ -217,214 +278,283 @@
         }
         
         .product-info {
-            padding: 1rem;
+            padding: 15px;
         }
         
         .product-name {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            height: 40px;
+            overflow: hidden;
         }
         
         .product-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .price {
             font-weight: bold;
-            color: #28a745;
+            color: var(--primary-color);
         }
         
-        .product-actions {
-            padding: 0 1rem 1rem;
-        }
-        
-        .btn.add {
-            background-color: #6c757d;
+        .add-to-cart {
+            background-color: var(--primary-color);
             color: white;
-            width: 100%;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
         
-        .btn.add:hover {
-            background-color: #5a6268;
+        .add-to-cart:hover {
+            background-color: #c41f29;
         }
         
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            grid-column: 1 / -1;
-        }
-        
-        .error {
-            text-align: center;
-            padding: 2rem;
-            color: #dc3545;
-            font-size: 1.2rem;
-            grid-column: 1 / -1;
-        }
-        
+        /* فوتر */
         footer {
-            background-color: #343a40;
+            background-color: #222;
             color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
+            padding: 40px 0 20px;
         }
         
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #444;
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* ریسپانسیو */
         @media (max-width: 768px) {
-            .header-inner {
+            .top-header-container {
                 flex-direction: column;
-                padding: 1rem;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-bar {
+                margin: 0;
+                width: 100%;
             }
             
             .main-nav ul {
-                margin: 1rem 0;
-                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             
-            .hero-content h1 {
-                font-size: 2rem;
+            .hero-slider {
+                height: 300px;
+            }
+            
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+            
+            .slide-content p {
+                font-size: 1rem;
             }
             
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
         }
-        
-        /* استایل فرم سفارش */
-        .order-form {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 600px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input, 
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-        }
-        
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .submit-btn {
-            background-color: #6c757d;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            width: 100%;
-        }
-        
-        .submit-btn:hover {
-            background-color: #5a6268;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-inner">
+    <!-- هدر بالا -->
+    <div class="top-header">
+        <div class="top-header-container">
+            <div class="top-header-contact">
+                <a href="#"><i class="fas fa-phone"></i> ۰۹۱۲۸۸۸۳۳۴۳</a>
+                <a href="#"><i class="fas fa-envelope"></i> info@halstonshop.ir</a>
+            </div>
+            <div class="top-header-links">
+                <a href="#">پرسش های متداول</a>
+                <a href="#">قوانین و مقررات</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- هدر اصلی -->
+    <header class="main-header">
+        <div class="header-container">
             <div class="logo">HALSTON</div>
-
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/">خانه</a></li>
-                    <li><a href="/category/women">زنانه</a></li>
-                    <li><a href="/contact">تماس با ما</a></li>
-                </ul>
-            </nav>
-
-            <!-- سبد خرید بالا سمت چپ -->
-            <div class="cart-wrapper">
-                <button id="cart-toggle" class="cart-btn">
-                    🛒 <span id="cart-count">0</span>
-                </button>
-                
-                <!-- پاپ‌آپ مینی‌کارت -->
-                <div id="cart-popup" class="cart-popup hidden">
-                    <h4>سبد خرید</h4>
-                    <div id="cart-items" class="cart-items">
-                        <p>سبد خرید شما خالی است</p>
-                    </div>
-                    <div class="cart-footer">
-                        <div id="cart-total">جمع: ۰ تومان</div>
-                        <div class="cart-actions">
-                            <button class="btn small" onclick="clearCart()">پاک کردن</button>
-                            <button class="btn primary small" onclick="openOrderForm()">تسویه</button>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="جستجوی محصولات...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="header-icons">
+                <a href="#" class="header-icon">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="header-icon">
+                    <i class="fas fa-heart"></i>
+                </a>
+                <a href="#" class="header-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
             </div>
         </div>
     </header>
-
-    <main>
-        <section class="hero">
-            <div class="hero-slide active">
-                <div class="hero-content">
-                    <h1>کالکشن جدید تابستان ۱۴۰۳</h1>
-                    <p>جدیدترین محصولات با بهترین کیفیت</p>
-                    <a class="btn primary" href="#products">مشاهده محصولات</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="products" class="products-section">
-            <h2>محصولات ویژه</h2>
-            <div id="products-grid" class="products-grid">
-                <div class="loading">در حال دریافت محصولات...</div>
-            </div>
-        </section>
-
-        <!-- فرم سفارش -->
-        <div id="order-form-container" class="order-form hidden">
-            <h3>تکمیل اطلاعات سفارش</h3>
-            <form id="order-form" action="/order" method="POST">
-                <div class="form-group">
-                    <label for="name">نام کامل:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">شماره تماس:</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="address">آدرس:</label>
-                    <textarea id="address" name="address" required></textarea>
-                </div>
-                
-                <!-- آیتم‌های سبد خرید به صورت مخفی -->
-                <div id="order-items">
-                    <!-- توسط JavaScript پر خواهد شد -->
-                </div>
-                
-                <button type="submit" class="submit-btn">ثبت سفارش و دریافت فاکتور</button>
-            </form>
+    
+    <!-- منوی اصلی -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <ul>
+                <li><a href="/">خانه</a></li>
+                <li><a href="/category/women">پوشاک زنانه</a></li>
+                <li><a href="#">تخفیف‌ها</a></li>
+                <li><a href="#">برندها</a></li>
+                <li><a href="/contact">تماس با ما</a></li>
+            </ul>
         </div>
-    </main>
-
+    </nav>
+    
+    <!-- اسلایدر -->
+    <div class="hero-slider">
+        <div class="hero-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d');">
+            <div class="slide-content">
+                <h2>کالکشن جدید تابستان ۱۴۰۳</h2>
+                <p>جدیدترین محصولات با بهترین کیفیت</p>
+                <a href="#products" class="btn">مشاهده محصولات</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- محصولات -->
+    <section id="products" class="products-section">
+        <h2 class="section-title">محصولات پرفروش</h2>
+        
+        <div id="products-grid" class="products-grid">
+            <div class="loading">در حال دریافت محصولات...</div>
+        </div>
+    </section>
+    
+    <!-- فوتر -->
     <footer>
-        <div class="footer-inner">
-            © 2025 هالستون — تمامی حقوق محفوظ است.
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>درباره هالستون</h3>
+                <p>فروشگاه اینترنتی هالستون با ارائه بهترین محصولات و کیفیت عالی در خدمت شما مشتریان گرامی می باشد.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>دسترسی سریع</h3>
+                <ul class="footer-links">
+                    <li><a href="/">خانه</a></li>
+                    <li><a href="/category/women">پوشاک زنانه</a></li>
+                    <li><a href="#">تخفیف‌ها</a></li>
+                    <li><a href="/contact">تماس با ما</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>خدمات مشتریان</h3>
+                <ul class="footer-links">
+                    <li><a href="#">پرسش های متداول</a></li>
+                    <li><a href="#">رویه بازگرداندن کالا</a></li>
+                    <li><a href="#">شرایط استفاده</a></li>
+                    <li><a href="#">حریم خصوصی</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>تماس با ما</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-phone"></i> ۰۹۱۲۸۸۸۳۳۴۳</li>
+                    <li><i class="fas fa-envelope"></i> info@halstonshop.ir</li>
+                    <li><i class="fas fa-map-marker-alt"></i> تهران، خیابان ولیعصر</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            © ۱۴۰۲ - کلیه حقوق برای فروشگاه اینترنتی هالستون محفوظ است.
         </div>
     </footer>
 
@@ -461,16 +591,19 @@
             
             for (const [code, product] of Object.entries(products)) {
                 productsHTML += `
-                    <article class="product-card">
-                        ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image">` : ''}
+                    <div class="product-card">
+                        <span class="product-badge">پرفروش</span>
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
-                            <div class="product-price">${product.price.toLocaleString()} ${product.unit || 'تومان'}</div>
+                            <div class="product-price">
+                                <span class="price">${product.price.toLocaleString()} ${product.unit || 'تومان'}</span>
+                                <button class="add-to-cart" onclick="addToCart('${code}', '${product.name}', ${product.price})">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="product-actions">
-                            <button class="btn add" onclick="addToCart('${code}', '${product.name}', ${product.price})">افزودن به سبد</button>
-                        </div>
-                    </article>
+                    </div>
                 `;
             }
             
@@ -499,75 +632,11 @@
         }
         
         function updateCart() {
-            const cartCount = document.getElementById('cart-count');
-            const cartItems = document.getElementById('cart-items');
-            const cartTotal = document.getElementById('cart-total');
+            const cartCount = document.querySelector('.cart-count');
             
             // به روز رسانی تعداد
             cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
-            
-            // به روز رسانی آیتم‌ها
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p>سبد خرید شما خالی است</p>';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div>${item.name}</div>
-                        <div>${item.quantity} × ${item.price.toLocaleString()} تومان</div>
-                    </div>
-                `).join('');
-            }
-            
-            // به روز رسانی جمع کل
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartTotal.textContent = `جمع: ${total.toLocaleString()} تومان`;
         }
-        
-        function clearCart() {
-            cart = [];
-            updateCart();
-            document.getElementById('cart-popup').classList.add('hidden');
-        }
-        
-        function openOrderForm() {
-            if (cart.length === 0) {
-                alert('سبد خرید شما خالی است!');
-                return;
-            }
-            
-            // پر کردن فیلدهای مخفی فرم با آیتم‌های سبد خرید
-            const orderItemsContainer = document.getElementById('order-items');
-            orderItemsContainer.innerHTML = '';
-            
-            cart.forEach((item, index) => {
-                orderItemsContainer.innerHTML += `
-                    <input type="hidden" name="order_code" value="${item.code}">
-                    <input type="hidden" name="order_count" value="${item.quantity}">
-                `;
-            });
-            
-            // نمایش فرم سفارش
-            document.getElementById('order-form-container').classList.remove('hidden');
-            document.getElementById('order-form-container').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // مدیریت نمایش/پنهان کردن سبد خرید
-        document.getElementById('cart-toggle').addEventListener('click', function() {
-            const cartPopup = document.getElementById('cart-popup');
-            cartPopup.classList.toggle('hidden');
-        });
-        
-        // بستن سبد خرید با کلیک خارج از آن
-        document.addEventListener('click', function(event) {
-            const cartPopup = document.getElementById('cart-popup');
-            const cartToggle = document.getElementById('cart-toggle');
-            
-            if (!cartPopup.classList.contains('hidden') && 
-                !cartPopup.contains(event.target) && 
-                !cartToggle.contains(event.target)) {
-                cartPopup.classList.add('hidden');
-            }
-        });
         
         // دریافت محصولات هنگام لود صفحه
         document.addEventListener('DOMContentLoaded', fetchProducts);
