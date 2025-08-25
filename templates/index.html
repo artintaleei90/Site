@@ -1,51 +1,86 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>هالستون | صفحه اصلی</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>هالستون — صفحه اصلی</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<header>
-    <div class="logo">HALSTON</div>
-    <nav>
+  <header>
+    <div class="header-inner">
+      <div class="logo">HALSTON</div>
+
+      <nav class="main-nav">
         <ul>
-            <li><a href="/">خانه</a></li>
-            <li><a href="/category/women">زنانه</a></li>
-            <li><a href="/category/men">مردانه</a></li>
-            <li><a href="/category/kids">بچگانه</a></li>
-            <li><a href="/contact">تماس با ما</a></li>
+          <li><a href="{{ url_for('index') }}">خانه</a></li>
+          <li><a href="{{ url_for('category', category_name='women') }}">زنانه</a></li>
+          <li><a href="{{ url_for('category', category_name='men') }}">مردانه</a></li>
+          <li><a href="{{ url_for('category', category_name='kids') }}">بچگانه</a></li>
+          <li><a href="{{ url_for('contact') }}">تماس با ما</a></li>
         </ul>
-    </nav>
-    <div class="cart" onclick="toggleCart()">
-        🛒 <span id="cart-count">0</span>
-    </div>
-</header>
+      </nav>
 
-<section class="products">
-    <h2>محصولات ویژه</h2>
-    <div class="product-list">
-        {% for product in products %}
-        <div class="product-item">
-            <h3><a href="/product/{{ product.id }}">{{ product.name }}</a></h3>
-            <p>{{ product.price }} تومان</p>
-            <button onclick="addToCart('{{ product.name }}', {{ product.price }})">افزودن به سبد خرید</button>
+      <!-- سبد خرید بالا سمت چپ -->
+      <div class="cart-wrapper">
+        <button id="cart-toggle" class="cart-btn" onclick="toggleCartPopup(event)">
+          🛒 <span id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- پاپ‌آپ مینی‌کارت -->
+  <div id="cart-popup" class="cart-popup hidden" aria-hidden="true">
+    <h4>سبد خرید</h4>
+    <div id="cart-items" class="cart-items">
+      <!-- آیتم‌ها با JS پر می‌شوند -->
+    </div>
+    <div class="cart-footer">
+      <div id="cart-total">جمع: 0 تومان</div>
+      <div class="cart-actions">
+        <button onclick="clearCart()" class="btn small">پاک کردن</button>
+        <button onclick="checkout()" class="btn primary small">تسویه</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-slide active">
+        <div class="hero-content">
+          <h1>کالکشن جدید تابستان 2025</h1>
+          <p>جدیدترین محصولات با بهترین کیفیت</p>
+          <a class="btn primary" href="#products">مشاهده محصولات</a>
         </div>
+      </div>
+    </section>
+
+    <section id="products" class="products-section">
+      <h2>محصولات ویژه</h2>
+      <div class="products-grid">
+        {% for p in products %}
+        <article class="product-card" onclick="goToProduct({{ p.id }})" role="button" tabindex="0">
+          <div class="product-info">
+            <h3 class="product-name"><a href="{{ url_for('product_page', product_id=p.id) }}">{{ p.name }}</a></h3>
+            <div class="product-price">{{ "{:,}".format(p.price) }} تومان</div>
+          </div>
+          <div class="product-actions">
+            <button class="btn add" onclick="event.stopPropagation(); addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">افزودن به سبد</button>
+            <a class="btn outline" href="{{ url_for('product_page', product_id=p.id) }}" onclick="event.stopPropagation()">جزئیات</a>
+          </div>
+        </article>
         {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      © 2025 هالستون — تمامی حقوق محفوظ است.
     </div>
-</section>
+  </footer>
 
-<!-- مینی کارت -->
-<div id="cart-popup" class="cart-popup">
-    <h3>سبد خرید</h3>
-    <ul id="cart-items"></ul>
-    <button onclick="closeCart()">بستن</button>
-</div>
-
-<footer>
-    <p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
-</footer>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
