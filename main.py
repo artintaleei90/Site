@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, abort
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -15,14 +15,27 @@ app = Flask(__name__)
 
 # ---------------------- محصولات ----------------------
 products = {
-    "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
-    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
-    # میتونی ادامه بدی و برای هر محصول category اضافه کنی ("women" یا "men")
+    "3390": {
+        "id": "3390",
+        "name": "فری سایز - پک 6 عددی رنگ: در تصویر",
+        "price": 697000,
+        "unit": "هزار تومان",
+        "category": "women",
+        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"
+    },
+    "1107": {
+        "id": "1107",
+        "name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی",
+        "price": 547000,
+        "unit": "هزار تومان",
+        "category": "women",
+        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"
+    },
 }
 
 # اطلاعات مدیر برای ارسال PDF
 ADMIN_CHAT_ID = 6933858510
-TELEGRAM_TOKEN ="7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
+TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
 FONT_PATH = "Vazirmatn-Regular.ttf"
@@ -38,14 +51,24 @@ def reshape_text(text):
 def index():
     return render_template("index.html", products=products)
 
-# ---------------------- دسته‌بندی محصولات ----------------------
+# ---------------------- روت تماس با ما ----------------------
 @app.route('/contact')
 def contact():
     return "<h1>تماس با ما</h1><p>شماره تماس: 0912xxxxxxx</p>"
+
+# ---------------------- دسته‌بندی محصولات ----------------------
 @app.route('/category/<category_name>')
 def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
     return render_template("index.html", products=filtered_products)
+
+# ---------------------- صفحه جزئیات محصول ----------------------
+@app.route('/product/<product_id>')
+def product_page(product_id):
+    product = products.get(product_id)
+    if not product:
+        abort(404)
+    return render_template("product_page.html", product=product)
 
 # ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
@@ -129,7 +152,7 @@ def order():
 
     c.save()
 
-    # ارسال PDF به مدیر
+    # ارسال PDF به مدیر تلگرام
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
