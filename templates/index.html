@@ -59,18 +59,21 @@
     <section id="products" class="products-section">
       <h2>محصولات ویژه</h2>
       <div class="products-grid">
-        {% for p in products %}
-        <article class="product-card" onclick="goToProduct({{ p.id }})" role="button" tabindex="0">
-          <div class="product-info">
-            <h3 class="product-name"><a href="{{ url_for('product_page', product_id=p.id) }}">{{ p.name }}</a></h3>
-            <div class="product-price">{{ "{:,}".format(p.price) }} تومان</div>
-          </div>
-          <div class="product-actions">
-            <button class="btn add" onclick="event.stopPropagation(); addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">افزودن به سبد</button>
-            <a class="btn outline" href="{{ url_for('product_page', product_id=p.id) }}" onclick="event.stopPropagation()">جزئیات</a>
-          </div>
-        </article>
-        {% endfor %}
+        {% if products %}
+          {% for code, p in products.items() %}
+          <article class="product-card" role="button" tabindex="0">
+            <div class="product-info">
+              <h3 class="product-name">{{ p.name }}</h3>
+              <div class="product-price">{{ "{:,}".format(p.price | default(0) | int) }} تومان</div>
+            </div>
+            <div class="product-actions">
+              <button class="btn add" onclick="event.stopPropagation(); addToCart('{{ code }}', '{{ p.name }}', {{ p.price | default(0) }})">افزودن به سبد</button>
+            </div>
+          </article>
+          {% endfor %}
+        {% else %}
+          <p>هیچ محصولی یافت نشد 😢</p>
+        {% endif %}
       </div>
     </section>
   </main>
