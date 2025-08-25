@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, send_from_directory
+from flask import Flask, render_template, request, send_file, send_from_directory, jsonify
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -47,11 +47,12 @@ def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
     return render_template("index.html", products=filtered_products)
 
-# ---------------------- ثبت سفارش ----------------------
 # ---------------------- API محصولات ----------------------
 @app.route('/api/products')
 def api_products():
     return jsonify(products)
+
+# ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
 def order():
     name = request.form.get("name")
