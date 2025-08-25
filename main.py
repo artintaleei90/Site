@@ -39,6 +39,9 @@ def index():
     return render_template("index.html", products=products)
 
 # ---------------------- دسته‌بندی محصولات ----------------------
+@app.route('/contact')
+def contact():
+    return "<h1>تماس با ما</h1><p>شماره تماس: 0912xxxxxxx</p>"
 @app.route('/category/<category_name>')
 def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
