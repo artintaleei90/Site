@@ -21,7 +21,7 @@ products = {
 
 # اطلاعات مدیر برای ارسال PDF
 ADMIN_CHAT_ID = 6933858510
-TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
+TELEGRAM_TOKEN ="7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
 FONT_PATH = "Vazirmatn-Regular.ttf"
@@ -37,6 +37,7 @@ def reshape_text(text):
 def index():
     return render_template("index.html", products=products)
 
+# ---------------------- دسته‌بندی محصولات ----------------------
 @app.route('/contact')
 def contact():
     return "<h1>تماس با ما</h1><p>شماره تماس: 0912xxxxxxx</p>"
@@ -45,15 +46,6 @@ def contact():
 def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
     return render_template("index.html", products=filtered_products)
-
-# ---------------------- تایید گوگل ----------------------
-# توجه: قبلش فایل HTML که گوگل داده رو داخل ریشه پروژه قرار بده، مثلا: google12345abcde.html
-@app.route('googlef45b12f9e985ca0c.html')
-def google_verify(code):
-    filename = f"google{code}.html"
-    if os.path.exists(filename):
-        return send_from_directory(os.getcwd(), filename)
-    return "فایل تایید گوگل پیدا نشد.", 404
 
 # ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
@@ -122,7 +114,7 @@ def order():
     y -= 1*cm
 
     # اطلاعات پرداخت
-    bank_info_lines = [
+    bank_info_lines = [    
         "شماره :۰۹۱۲۸۸۸۳۳۴۳(واتساپ)",
         "فاکتور رو برای شماره بالا ارسال و نهایی کنید",
         "بانک سامان",
@@ -144,6 +136,11 @@ def order():
 
     # نمایش PDF به کاربر
     return send_file(filename, as_attachment=True)
+
+# ---------------------- روت گوگل ورریفیکیشن ----------------------
+@app.route('/googlef45b12f9e985ca0c.html')
+def google_verify():
+    return send_from_directory(os.getcwd(), 'googlef45b12f9e985ca0c.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
