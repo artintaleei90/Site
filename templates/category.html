@@ -1,44 +1,31 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ category_name }} | هالستون</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ category_name }} — هالستون</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<header>
+  <header class="header-inner">
     <div class="logo">HALSTON</div>
-    <nav>
-        <ul>
-            <li><a href="/">خانه</a></li>
-            <li><a href="/category/women">زنانه</a></li>
-            <li><a href="/category/men">مردانه</a></li>
-            <li><a href="/category/kids">بچگانه</a></li>
-            <li><a href="/contact">تماس با ما</a></li>
-        </ul>
-    </nav>
-</header>
+  </header>
 
-<section class="category-header">
-    <h1>{{ category_name }}</h1>
-</section>
-
-<section class="products">
-    <div class="product-list">
-        {% for product in category_products %}
-        <div class="product-item">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.price }} تومان</p>
-            <a href="/product/{{ product.id }}">مشاهده محصول</a>
+  <main>
+    <section class="category">
+      <h1>{{ category_name }}</h1>
+      <div class="products-grid">
+        {% for p in category_products %}
+        <div class="product-card">
+          <h3><a href="{{ url_for('product_page', product_id=p.id) }}">{{ p.name }}</a></h3>
+          <div class="price">{{ "{:,}".format(p.price) }} تومان</div>
+          <button class="btn add" onclick="addToCart({{ p.id }}, '{{ p.name }}', {{ p.price }})">افزودن</button>
         </div>
         {% endfor %}
-    </div>
-</section>
+      </div>
+    </section>
+  </main>
 
-<footer>
-<p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
-</footer>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
