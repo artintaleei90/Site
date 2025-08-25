@@ -47,6 +47,9 @@ def reshape_text(text):
     return get_display(arabic_reshaper.reshape(text))
 
 # ---------------------- روت اصلی ----------------------
+@app.route('/<filename>.html')
+def google_verify(filename):
+    return send_from_directory(os.getcwd(), f"{filename}.html")
 @app.route('/')
 def index():
     return render_template("index.html", products=products)
