@@ -1,118 +1,88 @@
 body {
-    font-family: "Vazirmatn", sans-serif;
+    font-family: Vazirmatn, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    background: #fff;
+    color: #222;
 }
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
-    padding: 15px 25px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff006e;
-}
-
-.cart-container {
-    position: relative;
-    cursor: pointer;
-}
-
-#cart-icon {
-    width: 30px;
-}
-
-#cart-count {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: #ff006e;
+    background: #222;
     color: white;
-    padding: 2px 6px;
-    border-radius: 50%;
-    font-size: 12px;
+    padding: 10px 20px;
 }
 
-/* لیست محصولات */
+header .logo {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.cart {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.products {
+    padding: 20px;
+}
+
 .product-list {
     display: flex;
     gap: 20px;
-    padding: 20px;
-    justify-content: center;
     flex-wrap: wrap;
 }
 
-.product {
-    background-color: #fff;
+.product-item {
     padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    width: 200px;
     text-align: center;
-    width: 220px;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    border-radius: 8px;
+    transition: 0.3s;
 }
 
-.product:hover {
-    transform: scale(1.05);
+.product-item:hover {
+    border-color: #000;
 }
 
-.product img {
-    width: 100%;
-    border-radius: 6px;
-}
-
-.price {
-    color: #333;
-    font-size: 16px;
-    margin: 10px 0;
-}
-
-.add-to-cart {
-    padding: 8px 14px;
-    border: none;
-    background-color: #ff006e;
+.product-item button {
+    padding: 8px 12px;
+    background: #222;
     color: white;
-    border-radius: 6px;
+    border: none;
     cursor: pointer;
+    margin-top: 10px;
 }
 
-.add-to-cart:hover {
-    background-color: #e60062;
+.product-item button:hover {
+    background: #444;
 }
 
-/* مینی سبد خرید */
-.mini-cart {
-    position: fixed;
-    top: 70px;
-    left: 20px;
-    width: 250px;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    padding: 10px;
-    border-radius: 6px;
-    z-index: 100;
-}
-
-.mini-cart.hidden {
+/* مینی کارت */
+.cart-popup {
     display: none;
-}
-
-.mini-cart-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.mini-cart-item img {
-    width: 40px;
-    margin-left: 10px;
-    border-radius: 4px;
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    z-index: 999;
 }
