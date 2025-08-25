@@ -18,52 +18,30 @@
             <li><a href="/contact">تماس با ما</a></li>
         </ul>
     </nav>
-
-    <!-- سبد خرید بالا سمت چپ -->
-    <div class="cart-icon" onclick="toggleCart()">
+    <div class="cart" onclick="toggleCart()">
         🛒 <span id="cart-count">0</span>
     </div>
 </header>
-
-<!-- پاپ‌آپ سبد خرید -->
-<div id="cart-popup" class="cart-popup hidden">
-    <h3>سبد خرید شما</h3>
-    <div id="cart-items"></div>
-    <button onclick="goToCart()" class="btn-primary">مشاهده سبد خرید</button>
-</div>
-
-<section class="banner">
-    <div class="slide active">
-        <div class="caption">
-            <h1>کالکشن جدید تابستان 2025</h1>
-            <p>جدیدترین محصولات با بهترین کیفیت</p>
-            <a href="#" class="btn-primary">خرید کنید</a>
-        </div>
-    </div>
-    <div class="slide">
-        <div class="caption">
-            <h1>تخفیف‌های شگفت‌انگیز</h1>
-            <p>تا 50% تخفیف ویژه</p>
-            <a href="#" class="btn-primary">مشاهده محصولات</a>
-        </div>
-    </div>
-</section>
 
 <section class="products">
     <h2>محصولات ویژه</h2>
     <div class="product-list">
         {% for product in products %}
-        <div class="product-item" onclick="goToProduct('{{ product.id }}')">
-            <img src="{{ product.image }}" alt="{{ product.name }}">
-            <h3>{{ product.name }}</h3>
+        <div class="product-item">
+            <h3><a href="/product/{{ product.id }}">{{ product.name }}</a></h3>
             <p>{{ product.price }} تومان</p>
-            <button onclick="event.stopPropagation(); addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{ product.image }}')">
-                افزودن به سبد خرید
-            </button>
+            <button onclick="addToCart('{{ product.name }}', {{ product.price }})">افزودن به سبد خرید</button>
         </div>
         {% endfor %}
     </div>
 </section>
+
+<!-- مینی کارت -->
+<div id="cart-popup" class="cart-popup">
+    <h3>سبد خرید</h3>
+    <ul id="cart-items"></ul>
+    <button onclick="closeCart()">بستن</button>
+</div>
 
 <footer>
     <p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
