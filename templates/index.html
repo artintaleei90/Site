@@ -306,6 +306,91 @@
             display: block;
         }
         
+        /* مودال اطلاعات کاربر */
+        .user-info-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            z-index: 1001;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .user-info-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .submit-order-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-order-btn:hover {
+            background-color: #c41f29;
+        }
+        
         /* منوی اصلی */
         .main-nav {
             background-color: var(--primary-color);
@@ -675,7 +760,7 @@
             flex-grow: 1;
             padding: 10px 15px;
             border: none;
-            border-radius: 4px 0 4px 0;
+            border-radius: 4px 0 0 4px;
         }
         
         .newsletter-form button {
@@ -787,6 +872,11 @@
             .slide-content p {
                 font-size: 1rem;
             }
+            
+            .user-info-modal {
+                width: 95%;
+                padding: 15px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -890,8 +980,40 @@
                 <span>جمع کل:</span>
                 <span id="cart-total">۰ تومان</span>
             </div>
-            <button class="checkout-btn" onclick="checkout()">تکمیل سفارش</button>
+            <button class="checkout-btn" onclick="openUserInfoModal()">تکمیل سفارش</button>
         </div>
+    </div>
+    
+    <!-- مودال اطلاعات کاربر -->
+    <div class="user-info-modal" id="user-info-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">تکمیل اطلاعات سفارش</h3>
+            <button class="close-modal" onclick="closeUserInfoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="order-form" method="POST" action="/order">
+            <div class="form-group">
+                <label for="name" class="form-label">نام و نام خانوادگی</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">شماره تماس</label>
+                <input type="tel" id="phone" name="phone" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address" class="form-label">آدرس کامل</label>
+                <textarea id="address" name="address" class="form-input" rows="3" required></textarea>
+            </div>
+            
+            <!-- اطلاعات محصولات به صورت مخفی -->
+            <div id="order-items"></div>
+            
+            <button type="submit" class="submit-order-btn">ثبت و پرداخت سفارش</button>
+        </form>
     </div>
     
     <!-- اسلایدر -->
@@ -1169,39 +1291,54 @@
             document.getElementById('overlay').classList.remove('active');
         }
         
-        function checkout() {
+        function openUserInfoModal() {
             if (cart.length === 0) {
                 alert('سبد خرید شما خالی است!');
                 return;
             }
             
-            // ایجاد فرم برای ارسال به Flask
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/order';
+            // پر کردن فیلدهای مخفی فرم با آیتم‌های سبد خرید
+            const orderItemsContainer = document.getElementById('order-items');
+            orderItemsContainer.innerHTML = '';
             
-            cart.forEach(item => {
-                const codeInput = document.createElement('input');
-                codeInput.type = 'hidden';
-                codeInput.name = 'order_code';
-                codeInput.value = item.id;
-                form.appendChild(codeInput);
-                
-                const countInput = document.createElement('input');
-                countInput.type = 'hidden';
-                countInput.name = 'order_count';
-                countInput.value = item.quantity;
-                form.appendChild(countInput);
+            cart.forEach((item) => {
+                orderItemsContainer.innerHTML += `
+                    <input type="hidden" name="order_code" value="${item.id}">
+                    <input type="hidden" name="order_count" value="${item.quantity}">
+                `;
             });
             
-            document.body.appendChild(form);
-            form.submit();
+            // نمایش مودال اطلاعات کاربر
+            document.getElementById('user-info-modal').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+        
+        function closeUserInfoModal() {
+            document.getElementById('user-info-modal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
         }
         
         // دریافت محصولات هنگام لود صفحه
         document.addEventListener('DOMContentLoaded', function() {
             fetchProducts();
             updateCart();
+            
+            // اضافه کردن event listener برای فرم
+            document.getElementById('order-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const address = document.getElementById('address').value;
+                
+                if (!name || !phone || !address) {
+                    alert('لطفا تمامی فیلدهای ضروری را پر کنید.');
+                    return;
+                }
+                
+                // اگر همه چیز درست بود، فرم را سابمیت کن
+                this.submit();
+            });
         });
     </script>
 </body>
