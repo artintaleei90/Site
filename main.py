@@ -48,6 +48,10 @@ def category(category_name):
     return render_template("index.html", products=filtered_products)
 
 # ---------------------- ثبت سفارش ----------------------
+# ---------------------- API محصولات ----------------------
+@app.route('/api/products')
+def api_products():
+    return jsonify(products)
 @app.route('/order', methods=['POST'])
 def order():
     name = request.form.get("name")
