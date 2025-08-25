@@ -1,41 +1,34 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تماس با ما | هالستون</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تماس با ما — هالستون</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<header>
+  <header class="header-inner">
     <div class="logo">HALSTON</div>
-    <nav>
-        <ul>
-            <li><a href="/">خانه</a></li>
-            <li><a href="/category/women">زنانه</a></li>
-            <li><a href="/category/men">مردانه</a></li>
-            <li><a href="/category/kids">بچگانه</a></li>
-            <li><a href="/contact">تماس با ما</a></li>
-        </ul>
-    </nav>
-</header>
+  </header>
 
-<section class="contact">
-    <h1>تماس با ما</h1>
-    <form action="/contact" method="POST">
-        <label>نام و نام خانوادگی:</label>
+  <main>
+    <section class="contact-form">
+      <h1>تماس با ما</h1>
+      {% if ok %}
+        <p>با تشکر {{ name }}، پیام شما دریافت شد.</p>
+      {% endif %}
+      <form method="post" action="{{ url_for('contact') }}">
+        <label>نام و نام خانوادگی</label>
         <input type="text" name="name" required>
-        <label>ایمیل:</label>
+        <label>ایمیل</label>
         <input type="email" name="email" required>
-        <label>پیام شما:</label>
+        <label>پیام</label>
         <textarea name="message" rows="5" required></textarea>
-        <button type="submit">ارسال پیام</button>
-    </form>
-</section>
+        <button class="btn primary" type="submit">ارسال</button>
+      </form>
+    </section>
+  </main>
 
-<footer>
-<p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
-</footer>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
