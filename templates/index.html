@@ -120,6 +120,13 @@
             margin-bottom: 1rem;
         }
         
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
         .cart-footer {
             border-top: 1px solid #eee;
             padding-top: 1rem;
@@ -196,7 +203,6 @@
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
         }
         
         .product-card:hover {
@@ -242,6 +248,7 @@
             text-align: center;
             padding: 2rem;
             font-size: 1.2rem;
+            grid-column: 1 / -1;
         }
         
         .error {
@@ -249,6 +256,7 @@
             padding: 2rem;
             color: #dc3545;
             font-size: 1.2rem;
+            grid-column: 1 / -1;
         }
         
         footer {
@@ -277,6 +285,56 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
+        }
+        
+        /* استایل فرم سفارش */
+        .order-form {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #5a6268;
         }
     </style>
 </head>
@@ -309,7 +367,7 @@
                         <div id="cart-total">جمع: ۰ تومان</div>
                         <div class="cart-actions">
                             <button class="btn small" onclick="clearCart()">پاک کردن</button>
-                            <button class="btn primary small" onclick="checkout()">تسویه</button>
+                            <button class="btn primary small" onclick="openOrderForm()">تسویه</button>
                         </div>
                     </div>
                 </div>
@@ -334,6 +392,34 @@
                 <div class="loading">در حال دریافت محصولات...</div>
             </div>
         </section>
+
+        <!-- فرم سفارش -->
+        <div id="order-form-container" class="order-form hidden">
+            <h3>تکمیل اطلاعات سفارش</h3>
+            <form id="order-form" action="/order" method="POST">
+                <div class="form-group">
+                    <label for="name">نام کامل:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">شماره تماس:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">آدرس:</label>
+                    <textarea id="address" name="address" required></textarea>
+                </div>
+                
+                <!-- آیتم‌های سبد خرید به صورت مخفی -->
+                <div id="order-items">
+                    <!-- توسط JavaScript پر خواهد شد -->
+                </div>
+                
+                <button type="submit" class="submit-btn">ثبت سفارش و دریافت فاکتور</button>
+            </form>
+        </div>
     </main>
 
     <footer>
@@ -440,16 +526,29 @@
         function clearCart() {
             cart = [];
             updateCart();
+            document.getElementById('cart-popup').classList.add('hidden');
         }
         
-        function checkout() {
+        function openOrderForm() {
             if (cart.length === 0) {
                 alert('سبد خرید شما خالی است!');
                 return;
             }
             
-            alert('با تشکر از خرید شما! به صفحه تسویه حساب منتقل می‌شوید.');
-            // در اینجا می‌توانید کاربر را به صفحه تسویه حساب منتقل کنید
+            // پر کردن فیلدهای مخفی فرم با آیتم‌های سبد خرید
+            const orderItemsContainer = document.getElementById('order-items');
+            orderItemsContainer.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                orderItemsContainer.innerHTML += `
+                    <input type="hidden" name="order_code" value="${item.code}">
+                    <input type="hidden" name="order_count" value="${item.quantity}">
+                `;
+            });
+            
+            // نمایش فرم سفارش
+            document.getElementById('order-form-container').classList.remove('hidden');
+            document.getElementById('order-form-container').scrollIntoView({ behavior: 'smooth' });
         }
         
         // مدیریت نمایش/پنهان کردن سبد خرید
