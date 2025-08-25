@@ -417,6 +417,7 @@
             padding: 12px 20px;
             transition: background-color 0.3s;
             font-size: 0.9rem;
+            cursor: pointer;
         }
         
         .main-nav a:hover {
@@ -436,7 +437,7 @@
             margin-left: 5px;
         }
         
-        /* اسلایدر */
+        /* اسلایдер */
         .hero-slider {
             position: relative;
             overflow: hidden;
@@ -489,6 +490,7 @@
             border-radius: 4px;
             font-weight: 500;
             transition: background-color 0.3s;
+            cursor: pointer;
         }
         
         .btn:hover {
@@ -533,6 +535,7 @@
             color: var(--primary-color);
             text-decoration: none;
             font-size: 0.9rem;
+            cursor: pointer;
         }
         
         .products-grid {
@@ -599,6 +602,13 @@
             font-size: 1.1rem;
         }
         
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
         .add-to-cart {
             background-color: var(--primary-color);
             color: white;
@@ -629,6 +639,7 @@
             overflow: hidden;
             position: relative;
             height: 150px;
+            cursor: pointer;
         }
         
         .promo-banner img {
@@ -701,6 +712,7 @@
             text-decoration: none;
             transition: color 0.3s;
             font-size: 0.9rem;
+            cursor: pointer;
         }
         
         .footer-links a:hover {
@@ -908,12 +920,12 @@
     <div class="top-header">
         <div class="container">
             <div class="top-header-links">
-                <a href="#"><i class="fas fa-question-circle"></i> راهنمای خرید</a>
+                <a href="#" onclick="showGuide()"><i class="fas fa-question-circle"></i> راهنمای خرید</a>
                 <a href="#"><i class="fas fa-headset"></i> پشتیبانی: ۰۹۱۲۸۸۸۳۳۴۳</a>
             </div>
             <div class="top-header-links">
-                <a href="#"><i class="fas fa-user"></i> حساب کاربری</a>
-                <a href="#"><i class="fas fa-map-marker-alt"></i> پیگیری سفارش</a>
+                <a href="#" onclick="showAccount()"><i class="fas fa-user"></i> حساب کاربری</a>
+                <a href="#" onclick="showTracking()"><i class="fas fa-map-marker-alt"></i> پیگیری سفارش</a>
             </div>
         </div>
     </div>
@@ -921,7 +933,7 @@
     <!-- هدر اصلی -->
     <header class="main-header">
         <div class="container">
-            <div class="logo">HALSTON</div>
+            <div class="logo" onclick="goToHome()">HALSTON</div>
             
             <div class="search-bar">
                 <input type="text" placeholder="جستجوی محصولات...">
@@ -929,11 +941,11 @@
             </div>
             
             <div class="header-actions">
-                <div class="header-action">
+                <div class="header-action" onclick="showAccount()">
                     <i class="fas fa-user"></i>
                     <span>حساب کاربری</span>
                 </div>
-                <div class="header-action">
+                <div class="header-action" onclick="showWishlist()">
                     <i class="fas fa-heart"></i>
                     <span>علاقه‌مندی‌ها</span>
                 </div>
@@ -949,13 +961,16 @@
     <!-- منوی اصلی -->
     <nav class="main-nav">
         <div class="container">
-            <div class="all-categories">
+            <div class="all-categories" onclick="showCategories()">
                 <i class="fas fa-bars"></i>
                 <span>دسته‌بندی محصولات</span>
             </div>
             <ul>
                 <li><a href="/">خانه</a></li>
                 <li><a href="/category/women">پوشاک زنانه</a></li>
+                <li><a href="#" onclick="showDiscounts()">تخفیف‌ها و پیشنهادها</a></li>
+                <li><a href="#" onclick="showBrands()">برندها</a></li>
+                <li><a href="/contact">تماس با ما</a></li>
             </ul>
         </div>
     </nav>
@@ -975,7 +990,7 @@
         <div class="cart-summary">
             <div class="cart-total">
                 <span>جمع کل:</span>
-                <span id="cart-total">۰ تومان</span>
+            <span id="cart-total">۰ تومان</span>
             </div>
             <button class="checkout-btn" onclick="openUserInfoModal()">تکمیل سفارش</button>
         </div>
@@ -1029,21 +1044,21 @@
     <!-- بنرهای تبلیغاتی -->
     <div class="container">
         <div class="promo-banners">
-            <div class="promo-banner">
+            <div class="promo-banner" onclick="showDiscounts()">
                 <img src="https://images.unsplash.com/photo-1520006403909-838d6b92c22e" alt="تخفیف ویژه">
                 <div class="banner-content">
                     <h3>تخفیف‌های ویژه</h3>
                     <p>تا ۵۰٪ تخفیف</p>
                 </div>
             </div>
-            <div class="promo-banner">
+            <div class="promo-banner" onclick="showBestSellers()">
                 <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f" alt="پرفروش‌ها">
                 <div class="banner-content">
                     <h3>پرفروش‌ترین‌ها</h3>
                     <p>محصولات محبوب</p>
                 </div>
             </div>
-            <div class="promo-banner">
+            <div class="promo-banner" onclick="showNewArrivals()">
                 <img src="https://images.unsplash.com/photo-1519692933481-e162a57d6721" alt="جدیدترین‌ها">
                 <div class="banner-content">
                     <h3>جدیدترین محصولات</h3>
@@ -1058,7 +1073,7 @@
         <section class="products-section" id="products">
             <div class="section-header">
                 <h2 class="section-title">پرفروش‌ترین محصولات</h2>
-                <a href="#" class="view-all">مشاهده همه</a>
+                <a href="#" class="view-all" onclick="showBestSellers()">مشاهده همه</a>
             </div>
             
             <div id="products-grid" class="products-grid">
@@ -1069,7 +1084,7 @@
         <section class="products-section">
             <div class="section-header">
                 <h2 class="section-title">جدیدترین محصولات</h2>
-                <a href="#" class="view-all">مشاهده همه</a>
+                <a href="#" class="view-all" onclick="showNewArrivals()">مشاهده همه</a>
             </div>
             
             <div id="new-products-grid" class="products-grid">
@@ -1097,8 +1112,8 @@
                     <ul class="footer-links">
                         <li><a href="/">خانه</a></li>
                         <li><a href="/category/women">پوشاک زنانه</a></li>
-                        <li><a href="#">تخفیف‌ها و پیشنهادها</a></li>
-                        <li><a href="#">برندها</a></li>
+                        <li><a href="#" onclick="showDiscounts()">تخفیف‌ها و پیشنهادها</a></li>
+                        <li><a href="#" onclick="showBrands()">برندها</a></li>
                         <li><a href="/contact">تماس با ما</a></li>
                     </ul>
                 </div>
@@ -1106,11 +1121,11 @@
                 <div class="footer-section">
                     <h3>خدمات مشتریان</h3>
                     <ul class="footer-links">
-                        <li><a href="#">پرسش های متداول</a></li>
-                        <li><a href="#">رویه بازگرداندن کالا</a></li>
-                        <li><a href="#">شرایط استفاده</a></li>
-                        <li><a href="#">حریم خصوصی</a></li>
-                        <li><a href="#">گزارش باگ</a></li>
+                        <li><a href="#" onclick="showFAQ()">پرسش های متداول</a></li>
+                        <li><a href="#" onclick="showReturnPolicy()">رویه بازگرداندن کالا</a></li>
+                        <li><a href="#" onclick="showTerms()">شرایط استفاده</a></li>
+                        <li><a href="#" onclick="showPrivacy()">حریم خصوصی</a></li>
+                        <li><a href="#" onclick="showBugReport()">گزارش باگ</a></li>
                     </ul>
                 </div>
                 
@@ -1177,15 +1192,25 @@
             let newProductsHTML = '';
             
             for (const [code, product] of Object.entries(products)) {
+                // ایجاد قیمت با تخفیف برای برخی محصولات
+                const hasDiscount = Math.random() > 0.7; // 30% محصولات تخفیف دارند
+                const discountPercentage = hasDiscount ? Math.floor(Math.random() * 30) + 10 : 0;
+                const discountedPrice = hasDiscount ? 
+                    Math.round(product.price * (100 - discountPercentage) / 100) : 
+                    product.price;
+                
                 const productCard = `
                     <div class="product-card">
-                        <span class="product-badge">پرفروش</span>
+                        ${hasDiscount ? `<span class="product-badge">${discountPercentage}% تخفیف</span>` : ''}
                         <img src="${product.image}" alt="${product.name}" class="product-image">
                         <div class="product-info">
                             <h3 class="product-name">${product.name}</h3>
                             <div class="product-price">
-                                <span class="price">${product.price.toLocaleString()} ${product.unit || 'تومان'}</span>
-                                <button class="add-to-cart" onclick="addToCart('${code}', '${product.name}', ${product.price}, '${product.image}')">
+                                <div>
+                                    <span class="price">${discountedPrice.toLocaleString()} ${product.unit || 'تومان'}</span>
+                                    ${hasDiscount ? `<span class="original-price">${product.price.toLocaleString()}</span>` : ''}
+                                </div>
+                                <button class="add-to-cart" onclick="addToCart('${code}', '${product.name}', ${discountedPrice}, '${product.image}')">
                                     <i class="fas fa-shopping-cart"></i>
                                 </button>
                             </div>
@@ -1313,6 +1338,67 @@
         function closeUserInfoModal() {
             document.getElementById('user-info-modal').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
+        }
+        
+        // توابع برای لینک‌های منو
+        function goToHome() {
+            window.location.href = '/';
+        }
+        
+        function showCategories() {
+            alert('دسته‌بندی محصولات به زودی اضافه خواهد شد.');
+        }
+        
+        function showDiscounts() {
+            alert('صفحه تخفیف‌ها به زودی اضافه خواهد شد.');
+        }
+        
+        function showBestSellers() {
+            alert('صفحه پرفروش‌ترین محصولات به زودی اضافه خواهد شد.');
+        }
+        
+        function showNewArrivals() {
+            alert('صفحه جدیدترین محصولات به زودی اضافه خواهد شد.');
+        }
+        
+        function showBrands() {
+            alert('صفحه برندها به زودی اضافه خواهد شد.');
+        }
+        
+        function showAccount() {
+            alert('صفحه حساب کاربری به زودی اضافه خواهد شد.');
+        }
+        
+        function showWishlist() {
+            alert('صفحه علاقه‌مندی‌ها به زودی اضافه خواهد شد.');
+        }
+        
+        function showTracking() {
+            alert('صفحه پیگیری سفارش به زودی اضافه خواهد شد.');
+        }
+        
+        function showGuide() {
+            alert('راهنمای خرید به زودی اضافه خواهد شد.');
+        }
+        
+        function showFAQ() {
+            alert('پرسش‌های متداول به زودی اضافه خواهد شد.');
+        }
+        
+        function showReturnPolicy() {
+            alert('رویه بازگرداندن کالا به زودی اضافه خواهد شد.');
+        }
+        
+        function showTerms() {
+            alert('شرایط استفاده به زودی اضافه خواهد شد.');
+        }
+        
+        function showPrivacy() {
+            alert('حریم خصوصی به زودی اضافه خواهد شد.');
+        }
+        
+        function showBugReport() {
+            alert('گزارش باگ به زودی اضافه خواهد شد.');
         }
         
         // دریافت محصولات هنگام لود صفحه
