@@ -138,9 +138,9 @@ def order():
     return send_file(filename, as_attachment=True)
 
 # ---------------------- روت گوگل ورریفیکیشن ----------------------
-@app.route('templates/googlef45b12f9e985ca0c.html')
+@app.route('/googlef45b12f9e985ca0c.html')
 def google_verify():
-    return send_from_directory(os.getcwd(), 'googlef45b12f9e985ca0c.html')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'googlef45b12f9e985ca0c.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
