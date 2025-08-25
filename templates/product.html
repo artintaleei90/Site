@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} | هالستون</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ product.name }} — هالستون</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<header>
-    <div class="logo">HALSTON</div>
-    <nav>
+  <header>
+    <div class="header-inner">
+      <div class="logo">HALSTON</div>
+      <nav class="main-nav">
         <ul>
-            <li><a href="/">خانه</a></li>
-            <li><a href="/category/women">زنانه</a></li>
-            <li><a href="/category/men">مردانه</a></li>
-            <li><a href="/category/kids">بچگانه</a></li>
-            <li><a href="/contact">تماس با ما</a></li>
+          <li><a href="{{ url_for('index') }}">خانه</a></li>
+          <li><a href="{{ url_for('category', category_name='women') }}">زنانه</a></li>
+          <li><a href="{{ url_for('category', category_name='men') }}">مردانه</a></li>
+          <li><a href="{{ url_for('category', category_name='kids') }}">بچگانه</a></li>
+          <li><a href="{{ url_for('contact') }}">تماس با ما</a></li>
         </ul>
-    </nav>
-</header>
+      </nav>
 
-<section class="product-detail">
-    <h1>{{ product.name }}</h1>
-    <p class="price">{{ product.price }} تومان</p>
-    <button onclick="addToCart('{{ product.name }}', {{ product.price }})">افزودن به سبد خرید</button>
-    <br><br>
-    <a href="/">بازگشت به صفحه اصلی</a>
-</section>
+      <div class="cart-wrapper">
+        <button id="cart-toggle" class="cart-btn" onclick="toggleCartPopup(event)">
+          🛒 <span id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-<footer>
-    <p>© 2025 هالستون. تمامی حقوق محفوظ است.</p>
-</footer>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <main>
+    <section class="product-detail">
+      <h1>{{ product.name }}</h1>
+      <p class="price">{{ "{:,}".format(product.price) }} تومان</p>
+      <p class="description">{{ product.description }}</p>
+
+      <div class="product-controls">
+        <label>تعداد:</label>
+        <input id="qty" type="number" min="1" value="1" style="width:80px; padding:6px; margin-left:10px;">
+        <button class="btn primary" onclick="addToCart({{ product.id }}, '{{ product.name }}', {{ product.price }})">افزودن به سبد</button>
+      </div>
+
+      <p><a href="{{ url_for('index') }}">« بازگشت به صفحه اصلی</a></p>
+    </section>
+  </main>
+
+  <!-- مینی‌کارت -->
+  <div id="cart-popup" class="cart-popup hidden" aria-hidden="true">
+    <h4>سبد خرید</h4>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer">
+      <div id="cart-total">جمع: 0 تومان</div>
+      <div class="cart-actions">
+        <button onclick="clearCart()" class="btn small">پاک کردن</button>
+        <button onclick="checkout()" class="btn primary small">تسویه</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
