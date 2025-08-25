@@ -37,6 +37,21 @@ def reshape_text(text):
 def index():
     return render_template("index.html", products=products)
 
+# ---------------------- API محصولات ----------------------
+@app.route('/api/products')
+def api_products():
+    return jsonify(products)
+
+# ---------------------- صفحه محصول ----------------------
+@app.route('/product')
+def product():
+    product_id = request.args.get('id')
+    product = products.get(product_id)
+    if product:
+        return render_template("product.html", product=product, product_id=product_id)
+    else:
+        return "محصول یافت نشد", 404
+
 # ---------------------- دسته‌بندی محصولات ----------------------
 @app.route('/contact')
 def contact():
@@ -46,11 +61,6 @@ def contact():
 def category(category_name):
     filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
     return render_template("index.html", products=filtered_products)
-
-# ---------------------- API محصولات ----------------------
-@app.route('/api/products')
-def api_products():
-    return jsonify(products)
 
 # ---------------------- ثبت سفارش ----------------------
 @app.route('/order', methods=['POST'])
