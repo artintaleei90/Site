@@ -6,226 +6,310 @@
     <title>هالستون | فروشگاه اینترنتی پوشاک</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* همان استایل قبلی */
-        * { box-sizing: border-box; margin:0; padding:0; font-family: Vazirmatn, sans-serif; }
-        body { background:#f5f5f5; color:#333; }
-        header { background:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; border-bottom:1px solid #ddd; }
-        header h1 { font-size:1.5rem; cursor:pointer; }
-        nav { display:flex; gap:10px; }
-        nav button { background:none; border:none; cursor:pointer; font-size:1rem; padding:5px 10px; }
-        nav button:hover { color:#007BFF; }
-        .categories { position:absolute; top:60px; left:0; background:#fff; width:200px; border:1px solid #ddd; display:none; flex-direction:column; z-index:1001; }
-        .categories.active { display:flex; }
-        .categories button { padding:10px; text-align:right; border:none; background:none; cursor:pointer; }
-        .categories button:hover { background:#f0f0f0; }
-
-        #products { padding:20px; max-width:1200px; margin:auto; }
-        #products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
-
-        .product-card { background:#fff; border:1px solid #ddd; padding:10px; border-radius:5px; display:flex; flex-direction:column; justify-content:space-between; }
-        .product-image { width:100%; height:180px; object-fit:cover; border-radius:5px; }
-        .product-info { margin-top:10px; display:flex; flex-direction:column; gap:5px; }
-        .product-name { font-weight:bold; font-size:1rem; }
-        .product-price { color:#007BFF; font-weight:bold; }
-        .product-actions { display:flex; justify-content:space-between; margin-top:5px; }
-        .product-actions button { cursor:pointer; border:none; background:none; font-size:1rem; }
-        .product-actions button.active i { color:red; }
-
-        .quantity-selector { display:flex; justify-content:space-between; align-items:center; margin-top:5px; }
-        .quantity-controls { display:flex; align-items:center; gap:5px; }
-        .quantity-btn { cursor:pointer; border:1px solid #ccc; padding:2px 6px; background:#eee; }
-        .quantity-input { width:40px; text-align:center; }
-
-        .cart-btn { position:fixed; bottom:20px; left:20px; background:#007BFF; color:#fff; padding:10px 15px; border-radius:50px; cursor:pointer; z-index:1000; display:flex; align-items:center; gap:5px; }
-        .cart-count { background:red; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:#fff; }
-
-        #cart-popup { position:fixed; top:0; left:0; width:100%; height:100%; display:none; justify-content:center; align-items:center; z-index:1002; }
-        #cart-popup.active { display:flex; }
-        .cart-content { background:#fff; width:90%; max-width:500px; max-height:80%; overflow-y:auto; border-radius:5px; padding:20px; position:relative; }
-        .cart-item { display:flex; gap:10px; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px; }
-        .cart-item img { width:60px; height:60px; object-fit:cover; border-radius:5px; }
-        .cart-item-details { flex:1; display:flex; flex-direction:column; justify-content:space-between; }
-        .remove-item { align-self:flex-end; cursor:pointer; color:red; border:none; background:none; }
-        #cart-total { font-weight:bold; margin-top:10px; text-align:right; }
-
-        #overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1001; }
-        #overlay.active { display:block; }
-
-        #user-info-modal { position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; width:90%; max-width:400px; border-radius:5px; display:none; flex-direction:column; gap:10px; z-index:1003; }
-        #user-info-modal.active { display:flex; }
-
-        input, textarea { width:100%; padding:8px; border:1px solid #ccc; border-radius:5px; }
-
-        .view-all { text-decoration:none; color:#007BFF; font-size:0.8rem; }
+        :root {
+            --primary-color: #e52733;
+            --secondary-color: #333;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --border-color: #dee2e6;
+            --background-color: #f5f5f5;
+        }
+        * {margin:0;padding:0;box-sizing:border-box;font-family:'Vazir','Tanha','Samim',sans-serif;}
+        body{background-color:var(--background-color);color:#333;line-height:1.6;}
+        .container{max-width:1200px;margin:0 auto;padding:0 15px;}
+        .top-header{background:#f5f5f5;border-bottom:1px solid var(--border-color);padding:8px 0;font-size:0.85rem;}
+        .top-header .container{display:flex;justify-content:space-between;align-items:center;}
+        .top-header-links{display:flex;gap:20px;}
+        .top-header-links a{color:var(--gray-color);text-decoration:none;transition:color 0.3s;}
+        .top-header-links a:hover{color:var(--primary-color);}
+        .main-header{background:white;padding:15px 0;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+        .main-header .container{display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-size:24px;font-weight:bold;color:var(--primary-color);cursor:pointer;}
+        .search-bar{flex-grow:1;margin:0 20px;position:relative;max-width:500px;}
+        .search-bar input{width:100%;padding:10px 40px 10px 15px;border:1px solid var(--border-color);border-radius:4px;font-size:0.9rem;}
+        .search-bar button{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-color);cursor:pointer;}
+        .header-actions{display:flex;gap:20px;align-items:center;}
+        .header-action{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--secondary-color);font-size:0.85rem;cursor:pointer;}
+        .header-action i{font-size:1.2rem;margin-bottom:5px;}
+        .cart-wrapper{position:relative;}
+        .cart-count{position:absolute;top:-5px;right:-5px;background-color:var(--primary-color);color:white;border-radius:50%;width:18px;height:18px;font-size:0.7rem;display:flex;justify-content:center;align-items:center;}
+        .cart-popup{position:fixed;top:0;right:0;width:350px;height:100vh;background:white;box-shadow:-5px 0 15px rgba(0,0,0,0.1);z-index:1000;padding:20px;overflow-y:auto;transform:translateX(100%);transition:transform 0.3s ease;}
+        .cart-popup.active{transform:translateX(0);}
+        .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border-color);}
+        .close-cart{background:none;border:none;font-size:1.2rem;cursor:pointer;}
+        .cart-items{margin-bottom:20px;}
+        .cart-item{display:flex;margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--border-color);}
+        .cart-item-image{width:70px;height:70px;object-fit:cover;border-radius:4px;margin-left:10px;}
+        .cart-item-details{flex-grow:1;display:flex;flex-direction:column;}
+        .cart-item-name{font-size:0.9rem;margin-bottom:5px;}
+        .cart-item-price{color:var(--primary-color);font-weight:bold;}
+        .cart-item-quantity{display:flex;align-items:center;margin-top:5px;}
+        .quantity-btn{width:25px;height:25px;background-color:var(--light-color);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .quantity-input{width:35px;height:25px;text-align:center;border:1px solid var(--border-color);margin:0 5px;border-radius:4px;}
+        .remove-item{color:var(--primary-color);background:none;border:none;cursor:pointer;font-size:0.8rem;margin-top:5px;align-self:flex-start;}
+        .cart-summary{border-top:1px solid var(--border-color);padding-top:15px;}
+        .cart-total{display:flex;justify-content:space-between;margin-bottom:15px;font-weight:bold;}
+        .checkout-btn{display:block;width:100%;padding:12px;background-color:var(--primary-color);color:white;border:none;border-radius:4px;font-weight:bold;cursor:pointer;transition:background-color 0.3s;}
+        .checkout-btn:hover{background-color:#c41f29;}
+        .empty-cart{text-align:center;padding:20px;color:var(--gray-color);}
+        .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;display:none;}
+        .overlay.active{display:block;}
+        .user-info-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);width:90%;max-width:500px;background:white;border-radius:8px;padding:25px;z-index:1001;box-shadow:0 5px 25px rgba(0,0,0,0.2);transition:transform 0.3s ease;}
+        .user-info-modal.active{transform:translate(-50%,-50%) scale(1);}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border-color);}
+        .modal-title{font-size:1.3rem;color:var(--secondary-color);}
+        .close-modal{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--gray-color);}
+        .form-group{margin-bottom:20px;}
+        .form-label{display:block;margin-bottom:8px;font-weight:500;}
+        .form-input{width:100%;padding:12px 15px;border:1px solid var(--border-color);border-radius:4px;font-size:1rem;font-family:inherit;}
+        .form-input:focus{outline:none;border-color:var(--primary-color);}
+        .submit-order-btn{display:block;width:100%;padding:14px;background-color:var(--primary-color);color:white;border:none;border-radius:4px;font-size:1rem;font-weight:bold;cursor:pointer;transition:background-color 0.3s;margin-top:10px;}
+        .submit-order-btn:hover{background-color:#c41f29;}
+        .main-nav{background-color:var(--primary-color);}
+        .main-nav .container{display:flex;justify-content:space-between;}
+        .main-nav ul{display:flex;list-style:none;}
+        .main-nav li{position:relative;}
+        .main-nav a{display:block;color:white;text-decoration:none;padding:12px 20px;transition:background-color 0.3s;font-size:0.9rem;cursor:pointer;}
+        .main-nav a:hover{background-color:rgba(0,0,0,0.1);}
+        .all-categories{background-color:#333;display:flex;align-items:center;padding:0 20px;cursor:pointer;color:white;}
+        .all-categories i{margin-left:5px;}
+        .hero-slider{position:relative;overflow:hidden;height:400px;margin:20px 0;}
+        .hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1s ease;background-size:cover;background-position:center;display:flex;align-items:center;}
+        .hero-slide.active{opacity:1;}
+        .slide-content{max-width:1200px;margin:0 auto;padding:0 15px;color:white;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+        .slide-content h2{font-size:2.5rem;margin-bottom:15px;}
+        .slide-content p{font-size:1.2rem;margin-bottom:20px;}
+        .btn{display:inline-block;padding:12px 25px;background-color:var(--primary-color);color:white;text-decoration:none;border-radius:4px;font-weight:500;transition:background-color 0.3s;}
+        .btn:hover{background-color:#c41f29;}
     </style>
 </head>
 <body>
-    <header>
-        <h1 onclick="goToHome()">هالستون</h1>
-        <nav>
-            <button onclick="showAllProducts()">همه محصولات</button>
-            <button onclick="toggleCategories()">دسته‌بندی‌ها</button>
-            <button onclick="openUserInfoModal()">اطلاعات سفارش</button>
-        </nav>
-        <div class="categories" id="categories-menu">
-            <button onclick="filterProducts('women')">زنانه</button>
-            <button onclick="filterProducts('men')">مردانه</button>
-            <button onclick="filterProducts('accessories')">اکسسوری</button>
+    <div class="top-header">
+        <div class="container">
+            <div>تماس: 021-12345678 | پشتیبانی آنلاین</div>
+            <div class="top-header-links">
+                <a href="#">دسته‌بندی‌ها</a>
+                <a href="#">برندها</a>
+                <a href="#">تخفیف‌ها</a>
+            </div>
+        </div>
+    </div>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">HALSTON</div>
+            <div class="search-bar">
+                <input type="text" placeholder="جستجو...">
+                <button><i class="fa fa-search"></i></button>
+            </div>
+            <div class="header-actions">
+                <div class="header-action" onclick="showCategories()">
+                    <i class="fa fa-th-large"></i>
+                    دسته‌بندی
+                </div>
+                <div class="cart-wrapper">
+                    <div class="header-action" onclick="toggleCart()">
+                        <i class="fa fa-shopping-cart"></i>
+                        سبد خرید
+                        <span class="cart-count" id="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <section id="products">
-        <div id="products-grid"></div>
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#">خانه</a></li>
+                <li><a href="#">محصولات</a></li>
+                <li><a href="#">درباره ما</a></li>
+                <li><a href="#">تماس با ما</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Slider -->
+    <section class="hero-slider">
+        <div class="hero-slide active" style="background-image:url('https://via.placeholder.com/1200x400');">
+            <div class="slide-content">
+                <h2>به فروشگاه HALSTON خوش آمدید</h2>
+                <p>جدیدترین مدل‌های پوشاک زنانه</p>
+                <a href="#" class="btn">مشاهده محصولات</a>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image:url('https://via.placeholder.com/1200x400/ff4444');">
+            <div class="slide-content">
+                <h2>تخفیف‌های ویژه</h2>
+                <p>همین امروز از تخفیف‌ها استفاده کنید</p>
+                <a href="#" class="btn">خرید کنید</a>
+            </div>
+        </div>
     </section>
 
-    <div class="cart-btn" onclick="toggleCart()">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-count">0</span>
-    </div>
-
-    <div id="cart-popup">
-        <div class="cart-content">
-            <button onclick="closeCart()" style="position:absolute;top:10px;right:10px;border:none;background:none;font-size:1.2rem;">&times;</button>
-            <div id="cart-items"></div>
-            <div id="cart-total">0 تومان</div>
+    <!-- Cart Popup -->
+    <div class="cart-popup" id="cart-popup">
+        <div class="cart-header">
+            <h3>سبد خرید شما</h3>
+            <button class="close-cart" onclick="closeCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <div class="empty-cart">سبد خرید شما خالی است.</div>
+        </div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                <span>جمع کل:</span>
+                <span id="cart-total">0 تومان</span>
+            </div>
+            <button class="checkout-btn" onclick="openUserInfoModal()">تکمیل سفارش</button>
         </div>
     </div>
 
-    <div id="overlay" onclick="closeAllModals()"></div>
+    <div class="overlay" id="overlay" onclick="closeCart(); closeUserInfoModal();"></div>
 
-    <div id="user-info-modal">
-        <button onclick="closeUserInfoModal()" style="align-self:flex-end;border:none;background:none;font-size:1.2rem;">&times;</button>
-        <h3>اطلاعات کاربر</h3>
-        <form id="user-info-form" method="POST" action="send_order.php">
-            <input type="text" name="name" placeholder="نام و نام خانوادگی" required>
-            <input type="tel" name="phone" placeholder="شماره تماس" required>
-            <textarea name="address" placeholder="آدرس" rows="3" required></textarea>
+    <!-- User Info Modal -->
+    <div class="user-info-modal" id="user-info-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">اطلاعات خریدار</h3>
+            <button class="close-modal" onclick="closeUserInfoModal()">&times;</button>
+        </div>
+        <form id="order-form" action="/submit_order" method="POST">
             <div id="order-items"></div>
-            <button type="submit">ثبت سفارش</button>
+            <div class="form-group">
+                <label class="form-label">نام و نام خانوادگی</label>
+                <input type="text" name="fullname" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">شماره تماس</label>
+                <input type="text" name="phone" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">آدرس</label>
+                <input type="text" name="address" class="form-input" required>
+            </div>
+            <button type="submit" class="submit-order-btn">ارسال سفارش</button>
         </form>
     </div>
 
     <script>
-        function toggleCategories() { document.getElementById('categories-menu').classList.toggle('active'); }
-        function closeCategories() { document.getElementById('categories-menu').classList.remove('active'); }
-        function filterProducts(category) {
-            const productCards = document.querySelectorAll('.product-card');
-            productCards.forEach(card => {
-                if(category==='all'||card.dataset.category===category) card.style.display='block';
-                else card.style.display='none';
-            });
-            closeCategories();
-        }
-        function goToHome() { window.location.href='/'; }
-        function showAllProducts() { filterProducts('all'); }
+        let cart = [];
 
-        let cart = JSON.parse(localStorage.getItem('cart'))||[];
-        let wishlist = JSON.parse(localStorage.getItem('wishlist'))||[];
-
-        function addToCart(code,name,price,image){
-            const quantity=parseInt(document.getElementById(`quantity-${code}`).value)||1;
-            const existing=cart.find(item=>item.id===code);
-            if(existing) existing.quantity+=quantity;
-            else cart.push({id:code,name,price,image,quantity});
+        function addToCart(product) {
+            let existing = cart.find(item => item.id === product.id);
+            if(existing){
+                existing.quantity += 1;
+            } else {
+                cart.push({...product, quantity:1});
+            }
             updateCart();
-            alert(`"${name}" به سبد خرید اضافه شد!`);
         }
 
-        function updateCart(){
-            const cartCount=document.querySelector('.cart-count');
-            const cartItems=document.getElementById('cart-items');
-            const cartTotal=document.getElementById('cart-total');
-            cartCount.textContent=cart.reduce((t,i)=>t+i.quantity,0);
-            if(cart.length===0) cartItems.innerHTML='<div class="empty-cart">سبد خرید شما خالی است</div>';
-            else cartItems.innerHTML=cart.map(item=>`
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="cart-item-details">
-                        <div>${item.name}</div>
-                        <div>${item.price.toLocaleString()} تومان</div>
-                        <div class="cart-item-quantity">
-                            <button onclick="changeQuantity('${item.id}',${item.quantity-1})">-</button>
-                            <input type="number" value="${item.quantity}" min="1" onchange="changeQuantity('${item.id}',parseInt(this.value))">
-                            <button onclick="changeQuantity('${item.id}',${item.quantity+1})">+</button>
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            cartCount.textContent = cart.reduce((a,b)=>a+b.quantity,0);
+            if(cart.length === 0){
+                cartItemsDiv.innerHTML = '<div class="empty-cart">سبد خرید شما خالی است.</div>';
+                cartTotal.textContent = '0 تومان';
+                return;
+            }
+
+            cartItemsDiv.innerHTML = '';
+            let total = 0;
+            cart.forEach(item=>{
+                total += item.price * item.quantity;
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price.toLocaleString()} تومان</div>
+                            <div class="cart-item-quantity">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, ${item.quantity-1})">-</button>
+                                <input type="text" class="quantity-input" value="${item.quantity}" onchange="changeQuantity(${item.id}, this.value)">
+                                <button class="quantity-btn" onclick="changeQuantity(${item.id}, ${item.quantity+1})">+</button>
+                            </div>
+                            <button class="remove-item" onclick="removeFromCart(${item.id})">حذف</button>
                         </div>
-                        <button class="remove-item" onclick="removeFromCart('${item.id}')">حذف</button>
                     </div>
-                </div>
-            `).join('');
-            const total=cart.reduce((s,i)=>s+i.price*i.quantity,0);
-            cartTotal.textContent=`${total.toLocaleString()} تومان`;
-            localStorage.setItem('cart',JSON.stringify(cart));
+                `;
+            });
+            cartTotal.textContent = total.toLocaleString() + ' تومان';
         }
 
-        function changeQuantity(id,newQ){ if(newQ<1)newQ=1; const item=cart.find(i=>i.id===id); if(item){item.quantity=newQ;updateCart();} }
-        function removeFromCart(id){ cart=cart.filter(i=>i.id!==id); updateCart(); }
-        function toggleCart(){ document.getElementById('cart-popup').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
-        function closeCart(){ document.getElementById('cart-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+        function changeQuantity(productId, newQuantity){
+            newQuantity = parseInt(newQuantity);
+            if(newQuantity < 1) return;
+            let item = cart.find(i=>i.id === productId);
+            if(item){
+                item.quantity = newQuantity;
+                updateCart();
+            }
+        }
+
+        function removeFromCart(productId){
+            cart = cart.filter(i=>i.id !== productId);
+            updateCart();
+        }
+
+        function toggleCart(){
+            document.getElementById('cart-popup').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeCart(){
+            document.getElementById('cart-popup').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
 
         function openUserInfoModal(){
-            if(cart.length===0){ alert('سبد خرید شما خالی است!'); return; }
-            const orderItems=document.getElementById('order-items'); orderItems.innerHTML='';
+            if(cart.length === 0){
+                alert('سبد خرید شما خالی است!');
+                return;
+            }
+            const orderItemsDiv = document.getElementById('order-items');
+            orderItemsDiv.innerHTML = '';
             cart.forEach(item=>{
-                orderItems.innerHTML+=`
-                    <input type="hidden" name="order_code[]" value="${item.id}">
-                    <input type="hidden" name="order_count[]" value="${item.quantity}">
-                `;
+                orderItemsDiv.innerHTML += `<input type="hidden" name="items[]" value='${JSON.stringify(item)}'>`;
             });
             document.getElementById('user-info-modal').classList.add('active');
             document.getElementById('overlay').classList.add('active');
         }
-        function closeUserInfoModal(){ document.getElementById('user-info-modal').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
-        function closeAllModals(){ closeCart(); closeUserInfoModal(); closeCategories(); }
 
-        function toggleWishlist(button,productId){
-            const idx=wishlist.indexOf(productId);
-            if(idx===-1) wishlist.push(productId);
-            else wishlist.splice(idx,1);
-            button.classList.toggle('active');
-            localStorage.setItem('wishlist',JSON.stringify(wishlist));
+        function closeUserInfoModal(){
+            document.getElementById('user-info-modal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
         }
 
-        function increaseProductQuantity(code){ const input=document.getElementById(`quantity-${code}`); input.value=parseInt(input.value)+1; }
-        function decreaseProductQuantity(code){ const input=document.getElementById(`quantity-${code}`); input.value=Math.max(1,parseInt(input.value)-1); }
+        // نمونه عملکرد دسته‌بندی و برند
+        function showCategories(){ alert('دسته‌بندی‌ها نمایش داده شد'); }
+        function showBrands(){ alert('برندها نمایش داده شد'); }
+        function showDiscounts(){ alert('تخفیف‌ها نمایش داده شد'); }
 
-        const sampleProducts={
-            "p1": {name:"پیراهن زنانه",price:120000,category:"women",image:"https://via.placeholder.com/200x180?text=p1",unit:"تومان"},
-            "p2": {name:"کفش مردانه",price:250000,category:"men",image:"https://via.placeholder.com/200x180?text=p2",unit:"تومان"},
-            "p3": {name:"گردنبند",price:80000,category:"accessories",image:"https://via.placeholder.com/200x180?text=p3",unit:"تومان"}
-        };
+        // نمونه اضافه کردن محصول
+        const sampleProducts = [
+            {id:1,name:"پیراهن زنانه",price:120000,image:"https://via.placeholder.com/150"},
+            {id:2,name:"شلوار جین",price:180000,image:"https://via.placeholder.com/150"},
+            {id:3,name:"کفش اسپرت",price:250000,image:"https://via.placeholder.com/150"}
+        ];
 
-        function displayProducts(products){
-            const grid=document.getElementById('products-grid');
-            grid.innerHTML='';
-            for(const [code,product] of Object.entries(products)){
-                grid.innerHTML+=`
-                    <div class="product-card" data-category="${product.category}">
-                        <img src="${product.image}" alt="${product.name}" class="product-image">
-                        <div class="product-info">
-                            <h3 class="product-name">${product.name}</h3>
-                            <div class="product-price">${product.price.toLocaleString()} ${product.unit}</div>
-                            <div class="product-actions">
-                                <button class="wishlist-btn" onclick="toggleWishlist(this,'${code}')"><i class="fas fa-heart"></i></button>
-                                <button class="add-to-cart" onclick="addToCart('${code}','${product.name}',${product.price},'${product.image}')">
-                                    <i class="fas fa-shopping-cart"></i> افزودن
-                                </button>
-                            </div>
-                            <div class="quantity-selector">
-                                <span>تعداد:</span>
-                                <div class="quantity-controls">
-                                    <button onclick="decreaseProductQuantity('${code}')">-</button>
-                                    <input type="number" id="quantity-${code}" class="quantity-input" value="1" min="1">
-                                    <button onclick="increaseProductQuantity('${code}')">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
+        // مثال اضافه به سبد خرید
+        sampleProducts.forEach(product=>{
+            let btn = document.createElement('button');
+            btn.textContent = `افزودن ${product.name} به سبد خرید`;
+            btn.onclick = ()=>addToCart(product);
+            document.body.appendChild(btn);
+        });
 
-        displayProducts(sampleProducts);
-        updateCart();
+        // Slider اتوماتیک
+        let slides = document.querySelectorAll('.hero-slide');
+        let currentSlide = 0;
+        setInterval(()=>{
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide+1)%slides.length;
+            slides[currentSlide].classList.add('active');
+        },5000);
     </script>
 </body>
 </html>
