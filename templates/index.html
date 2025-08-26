@@ -124,8 +124,9 @@
             cursor: pointer;
         }
         
-        .header-action i {
+        .header-action span {
             margin-bottom: 5px;
+            font-size: 1.2rem;
         }
         
         .cart-wrapper {
@@ -145,6 +146,304 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        
+        /* منوی اصلی */
+        .main-nav {
+            background-color: var(--primary-color);
+        }
+        
+        .main-nav .container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav li {
+            position: relative;
+        }
+        
+        .main-nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .main-nav a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* منوی دسته‌بندی */
+        .all-categories {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .categories-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 200px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .categories-menu.active {
+            display: block;
+        }
+        
+        .categories-menu ul {
+            list-style: none;
+            padding: 10px 0;
+        }
+        
+        .categories-menu li {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .categories-menu li:hover {
+            background-color: var(--light-color);
+        }
+        
+        /* اسلایدر */
+        .hero-slider {
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .slide-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .slide-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #c41f29;
+        }
+        
+        /* بخش محصولات */
+        .products-section {
+            padding: 40px 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .view-all {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            height: 44px;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .price {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .add-to-cart {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #c41f29;
+        }
+        
+        .wishlist-btn {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .wishlist-btn.active {
+            color: var(--primary-color);
+        }
+        
+        .wishlist-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .quantity-label {
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 25px;
+            height: 25px;
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            height: 25px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            margin: 0 5px;
+            border-radius: 4px;
         }
         
         /* پاپ‌آپ سبد خرید */
@@ -390,309 +689,76 @@
             background-color: #c41f29;
         }
         
-        /* منوی اصلی */
-        .main-nav {
-            background-color: var(--primary-color);
-        }
-        
-        .main-nav .container {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .main-nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        .main-nav li {
-            position: relative;
-        }
-        
-        .main-nav a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            transition: background-color 0.3s;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        
-        .main-nav a:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        .all-categories {
-            background-color: #333;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            cursor: pointer;
-            color: white;
-        }
-        
-        /* منوی دسته‌بندی */
-        .categories-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            width: 200px;
-            background-color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            z-index: 100;
-            display: none;
-        }
-        
-        .categories-menu.active {
-            display: block;
-        }
-        
-        .categories-menu ul {
-            list-style: none;
-            padding: 10px 0;
-        }
-        
-        .categories-menu li {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .categories-menu li:hover {
-            background-color: var(--light-color);
-        }
-        
-        /* اسلایدر */
-        .hero-slider {
-            position: relative;
-            overflow: hidden;
-            height: 400px;
-            margin: 20px 0;
-        }
-        
-        .hero-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-        }
-        
-        .hero-slide.active {
-            opacity: 1;
-        }
-        
-        .slide-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .slide-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        
-        .slide-content p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            background-color: #c41f29;
-        }
-        
-        /* بخش محصولات */
-        .products-section {
-            padding: 40px 0;
+        /* مودال فاکتور */
+        .invoice-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 90%;
+            max-width: 600px;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+            padding: 25px;
+            z-index: 1002;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
+        .invoice-modal.active {
+            transform: translate(-50%, -50%) scale(1);
         }
         
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--secondary-color);
-            position: relative;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: -16px;
-            right: 0;
-            width: 60px;
-            height: 3px;
-            background-color: var(--primary-color);
-        }
-        
-        .view-all {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-        
-        .product-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .product-info {
-            padding: 15px;
-        }
-        
-        .product-name {
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            height: 44px;
-            overflow: hidden;
-            line-height: 1.4;
-        }
-        
-        .product-price {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        
-        .price {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-        
-        .product-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-        }
-        
-        .add-to-cart {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .add-to-cart:hover {
-            background-color: #c41f29;
-        }
-        
-        .wishlist-btn {
-            background: none;
-            border: none;
-            color: var(--gray-color);
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: color 0.3s;
-        }
-        
-        .wishlist-btn.active {
-            color: var(--primary-color);
-        }
-        
-        .wishlist-btn:hover {
-            color: var(--primary-color);
-        }
-        
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        
-        .quantity-label {
-            margin-left: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-        }
-        
-        .quantity-btn {
-            width: 25px;
-            height: 25px;
-            background-color: var(--light-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .quantity-input {
-            width: 40px;
-            height: 25px;
+        .invoice-header {
             text-align: center;
-            border: 1px solid var(--border-color);
-            margin: 0 5px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        
+        .invoice-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-items th, .invoice-items td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .invoice-items th {
+            background-color: var(--light-color);
+        }
+        
+        .invoice-total {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-bank {
+            background-color: var(--light-color);
+            padding: 15px;
             border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-bank h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .invoice-bank p {
+            margin-bottom: 5px;
         }
         
         /* بنرهای تبلیغاتی */
@@ -888,11 +954,6 @@
                 justify-content: center;
             }
             
-            .all-categories {
-                justify-content: center;
-                padding: 12px 20px;
-            }
-            
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -909,7 +970,7 @@
                 font-size: 1rem;
             }
             
-            .user-info-modal {
+            .user-info-modal, .invoice-modal {
                 width: 95%;
                 padding: 15px;
             }
@@ -988,16 +1049,14 @@
                     <ul>
                         <li onclick="filterProducts('all')">همه محصولات</li>
                         <li onclick="filterProducts('women')">پوشاک زنانه</li>
-                        <li onclick="filterProducts('men')">پوشاک مردانه</li>
-                        <li onclick="filterProducts('kids')">پوشاک بچگانه</li>
+                        <li onclick="filterProducts('spring')">مجموعه بهاری</li>
                     </ul>
                 </div>
             </div>
             <ul>
                 <li><a href="/">خانه</a></li>
-                <li><a href="/category/women">پوشاک زنانه</a></li>
-                <li><a href="/category/men">پوشاک مردانه</a></li>
-                <li><a href="/category/kids">پوشاک بچگانه</a></li>
+                <li><a href="#" onclick="filterProducts('women')">پوشاک زنانه</a></li>
+                <li><a href="#" onclick="filterProducts('spring')">مجموعه بهاری</a></li>
             </ul>
         </div>
     </nav>
@@ -1028,7 +1087,7 @@
             <button class="close-modal" onclick="closeUserInfoModal()">✕</button>
         </div>
         
-        <form id="order-form" method="POST" action="/order">
+        <form id="order-form">
             <div class="form-group">
                 <label for="name" class="form-label">نام و نام خانوادگی</label>
                 <input type="text" id="name" name="name" class="form-input" required>
@@ -1047,8 +1106,51 @@
             <!-- اطلاعات محصولات به صورت مخفی -->
             <div id="order-items"></div>
             
-            <button type="submit" class="submit-order-btn">ثبت و پرداخت سفارش</button>
+            <button type="button" class="submit-order-btn" onclick="generateInvoice()">ثبت و پرداخت سفارش</button>
         </form>
+    </div>
+    
+    <!-- مودال فاکتور -->
+    <div class="invoice-modal" id="invoice-modal">
+        <div class="invoice-header">
+            <h2>فاکتور سفارش</h2>
+            <p>با تشکر از خرید شما</p>
+        </div>
+        
+        <div class="invoice-details">
+            <p><strong>نام مشتری:</strong> <span id="invoice-name"></span></p>
+            <p><strong>شماره تماس:</strong> <span id="invoice-phone"></span></p>
+            <p><strong>آدرس:</strong> <span id="invoice-address"></span></p>
+        </div>
+        
+        <table class="invoice-items">
+            <thead>
+                <tr>
+                    <th>نام محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت واحد</th>
+                    <th>مبلغ کل</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-items-body">
+            </tbody>
+        </table>
+        
+        <div class="invoice-total">
+            <p>جمع کل: <span id="invoice-total">۰</span> تومان</p>
+        </div>
+        
+        <div class="invoice-bank">
+            <h4>روش پرداخت</h4>
+            <p>شماره کارت: ۶۲۱۹-۸۶۱۰-۶۵۰۹-۳۰۸۹</p>
+            <p>به نام: آزیتا فتوحی مظفرنژاد</p>
+            <p>شماره تماس: ۰۹۱۲۸۸۸۳۳۴۳</p>
+            <p>لطفا پس از واریز مبلغ، فاکتور را برای شماره بالا ارسال کنید.</p>
+        </div>
+        
+        <button class="submit-order-btn" onclick="sendToTelegram()">ارسال فاکتور به تلگرام</button>
+        <button class="checkout-btn" onclick="printInvoice()" style="margin-top: 10px; background-color: var(--gray-color);">چاپ فاکتور</button>
+        <button class="checkout-btn" onclick="closeInvoice()" style="margin-top: 10px; background-color: #dc3545;">بستن</button>
     </div>
     
     <!-- اسلایدر -->
@@ -1056,7 +1158,7 @@
         <div class="hero-slider">
             <div class="hero-slide active" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d');">
                 <div class="slide-content">
-                    <h2>کالکشن جدید تابستان ۱۴۰۳</h2>
+                    <h2>کالکشن جدید بهار ۱۴۰۳</h2>
                     <p>جدیدترین محصولات با بهترین کیفیت</p>
                     <a href="#products" class="btn">مشاهده محصولات</a>
                 </div>
@@ -1067,18 +1169,18 @@
     <!-- بنرهای تبلیغاتی -->
     <div class="container">
         <div class="promo-banners">
-            <div class="promo-banner" onclick="goToCategory('women')">
+            <div class="promo-banner" onclick="filterProducts('women')">
                 <img src="https://images.unsplash.com/photo-1520006403909-838d6b92c22e" alt="پوشاک زنانه">
                 <div class="banner-content">
                     <h3>پوشاک زنانه</h3>
                     <p>جدیدترین مدل‌ها</p>
                 </div>
             </div>
-            <div class="promo-banner" onclick="goToCategory('men')">
-                <img src="https://images.unsplash.com/photo-1505022610485-0249ef5b1df0" alt="پوشاک مردانه">
+            <div class="promo-banner" onclick="filterProducts('spring')">
+                <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e" alt="مجموعه بهاری">
                 <div class="banner-content">
-                    <h3>پوشاک مردانه</h3>
-                    <p>مناسب برای هر سلیقه</p>
+                    <h3>مجموعه بهاری</h3>
+                    <p>تازه‌های فصل</p>
                 </div>
             </div>
         </div>
@@ -1116,9 +1218,8 @@
                     <h3>دسترسی سریع</h3>
                     <ul class="footer-links">
                         <li><a href="/">خانه</a></li>
-                        <li><a href="/category/women">پوشاک زنانه</a></li>
-                        <li><a href="/category/men">پوشاک مردانه</a></li>
-                        <li><a href="/category/kids">پوشاک بچگانه</a></li>
+                        <li><a href="#" onclick="filterProducts('women')">پوشاک زنانه</a></li>
+                        <li><a href="#" onclick="filterProducts('spring')">مجموعه بهاری</a></li>
                     </ul>
                     
                     <div class="footer-contact">
@@ -1129,330 +1230,473 @@
             </div>
             
             <div class="copyright">
-                <p>© ۱۴۰۲ - کلیه حقوق برای فروشگاه اینترنتی هالستون محفوظ است.</p>
+                <p>کلیه حقوق این وبسایت متعلق به فروشگاه هالستون می‌باشد. © ۱۴۰۳</p>
             </div>
         </div>
     </footer>
-
+    
     <script>
         // داده‌های محصولات
-        const productsData = {
-            "3390": {
-                "name": "فری سایز - پک 6 عددی رنگ: در تصویر", 
-                "price": 697000, 
-                "unit": "تومان",
-                "category": "women",
-                "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"
+        const products = [
+            {
+                id: 1,
+                name: "پیراهن زنانه مدل تابستانه",
+                price: 250000,
+                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1",
+                category: "women"
             },
-            "1107": {
-                "name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", 
-                "price": 547000, 
-                "unit": "تومان",
-                "category": "women", 
-                "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"
+            {
+                id: 2,
+                name: "شلوار جین زنانه",
+                price: 320000,
+                image: "https://images.unsplash.com/photo-1542272604-787c3835535d",
+                category: "women"
             },
-            "2201": {
-                "name": "تیشرت مردانه مدل M-ST01", 
-                "price": 289000, 
-                "unit": "تومان",
-                "category": "men", 
-                "image": "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3"
+            {
+                id: 3,
+                name: "بلوز زنانه طرح دار",
+                price: 180000,
+                image: "https://images.unsplash.com/photo-1589810635657-232948472d98",
+                category: "women"
             },
-            "3302": {
-                "name": "شلوارک زنانه کتان", 
-                "price": 375000, 
-                "unit": "تومان",
-                "category": "women", 
-                "image": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f"
+            {
+                id: 4,
+                name: "کت و شلوار مجلسی",
+                price: 650000,
+                image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea",
+                category: "women"
+            },
+            {
+                id: 5,
+                name: "پیراهن بهاری طرح گل",
+                price: 220000,
+                image: "https://images.unsplash.com/photo-1564859228273-274232fdb516",
+                category: "spring"
+            },
+            {
+                id: 6,
+                name: "دامن بهاری کوتاه",
+                price: 190000,
+                image: "https://images.unsplash.com/photo-1583496661160-fb5886a13d77",
+                category: "spring"
+            },
+            {
+                id: 7,
+                name: "شال گردن ابریشمی",
+                price: 120000,
+                image: "https://images.unsplash.com/photo-1544441893-675973e31985",
+                category: "spring"
+            },
+            {
+                id: 8,
+                name: "کفش پاشنه بلند مجلسی",
+                price: 420000,
+                image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2",
+                category: "women"
             }
-        };
-
-        // تابع برای نمایش محصولات
+        ];
+        
+        // متغیرهای سراسری
+        let cart = [];
+        let currentFilter = 'all';
+        
+        // تابع نمایش محصولات
         function displayProducts() {
             const productsGrid = document.getElementById('products-grid');
             
-            if (!productsData || Object.keys(productsData).length === 0) {
-                productsGrid.innerHTML = '<p>هیچ محصولی یافت نشد 😢</p>';
-                return;
-            }
+            // فیلتر کردن محصولات
+            const filteredProducts = currentFilter === 'all' 
+                ? products 
+                : products.filter(product => product.category === currentFilter);
             
-            let productsHTML = '';
+            // پاک کردن محتوای قبلی
+            productsGrid.innerHTML = '';
             
-            for (const [code, product] of Object.entries(productsData)) {
-                productsHTML += `
-                    <div class="product-card" data-category="${product.category || 'all'}">
-                        <img src="${product.image}" alt="${product.name}" class="product-image">
-                        <div class="product-info">
-                            <h3 class="product-name">${product.name}</h3>
-                            <div class="product-price">
-                                <span class="price">${product.price.toLocaleString()} ${product.unit || 'تومان'}</span>
+            // نمایش محصولات فیلتر شده
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">
+                            <span class="price">${product.price.toLocaleString()} تومان</span>
+                        </div>
+                        <div class="quantity-selector">
+                            <span class="quantity-label">تعداد:</span>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="decreaseQuantity(${product.id})">-</button>
+                                <input type="number" class="quantity-input" id="quantity-${product.id}" value="1" min="1">
+                                <button class="quantity-btn" onclick="increaseQuantity(${product.id})">+</button>
                             </div>
-                            <div class="product-actions">
-                                <button class="wishlist-btn" onclick="toggleWishlist(this, '${code}')">
-                                    ❤️
-                                </button>
-                                <button class="add-to-cart" onclick="addToCart('${code}', '${product.name}', ${product.price}, '${product.image}')">
-                                    افزودن
-                                </button>
-                            </div>
-                            <div class="quantity-selector">
-                                <span class="quantity-label">تعداد:</span>
-                                <div class="quantity-controls">
-                                    <button class="quantity-btn" onclick="decreaseProductQuantity('${code}')">-</button>
-                                    <input type="number" id="quantity-${code}" class="quantity-input" value="1" min="1">
-                                    <button class="quantity-btn" onclick="increaseProductQuantity('${code}')">+</button>
-                                </div>
-                            </div>
-                            <div style="margin-top: 10px;">
-                                <a href="/product?id=${code}" class="view-all" style="font-size: 0.8rem;">مشاهده جزئیات</a>
-                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">افزودن به سبد</button>
+                            <button class="wishlist-btn" onclick="toggleWishlist(${product.id})">❤️</button>
                         </div>
                     </div>
                 `;
-            }
-            
-            productsGrid.innerHTML = productsHTML;
+                productsGrid.appendChild(productCard);
+            });
         }
-
-        // توابع مدیریت سبد خرید
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
         
-        function addToCart(code, name, price, image) {
-            const quantity = parseInt(document.getElementById(`quantity-${code}`).value);
+        // تابع افزایش تعداد محصول
+        function increaseQuantity(productId) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        }
+        
+        // تابع کاهش تعداد محصول
+        function decreaseQuantity(productId) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        }
+        
+        // تابع افزودن به سبد خرید
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
             
-            const existingItem = cart.find(item => item.id === code);
+            // بررسی وجود محصول در سبد
+            const existingItem = cart.find(item => item.id === productId);
             
             if (existingItem) {
                 existingItem.quantity += quantity;
             } else {
                 cart.push({
-                    id: code,
-                    name: name,
-                    price: price,
-                    image: image,
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
                     quantity: quantity
                 });
             }
             
-            updateCart();
-            alert(`"${name}" به سبد خرید اضافه شد!`);
+            // بروزرسانی تعداد سبد خرید
+            updateCartCount();
+            
+            // نمایش پیام موفقیت
+            alert(`محصول ${product.name} به سبد خرید اضافه شد.`);
         }
         
-        function updateCart() {
+        // تابع بروزرسانی تعداد سبد خرید
+        function updateCartCount() {
             const cartCount = document.querySelector('.cart-count');
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+        
+        // تابع نمایش/بستن سبد خرید
+        function toggleCart() {
+            const cartPopup = document.getElementById('cart-popup');
+            const overlay = document.getElementById('overlay');
+            
+            if (cart.length > 0) {
+                updateCartDisplay();
+            }
+            
+            cartPopup.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        function closeCart() {
+            const cartPopup = document.getElementById('cart-popup');
+            const overlay = document.getElementById('overlay');
+            
+            cartPopup.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        // تابع بروزرسانی نمایش سبد خرید
+        function updateCartDisplay() {
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
             
-            // به روز رسانی تعداد
-            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            // پاک کردن محتوای قبلی
+            cartItems.innerHTML = '';
             
-            // به روز رسانی آیتم‌ها
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="empty-cart">سبد خرید شما خالی است</div>';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
-                        <div class="cart-item-details">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">${item.price.toLocaleString()} تومان</div>
-                            <div class="cart-item-quantity">
-                                <button class="quantity-btn" onclick="changeQuantity('${item.id}', ${item.quantity - 1})">-</button>
-                                <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="changeQuantity('${item.id}', parseInt(this.value))">
-                                <button class="quantity-btn" onclick="changeQuantity('${item.id}', ${item.quantity + 1})">+</button>
-                            </div>
-                            <button class="remove-item" onclick="removeFromCart('${item.id}')">حذف</button>
+            // افزودن آیتم‌های سبد خرید
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <h4 class="cart-item-name">${item.name}</h4>
+                        <p class="cart-item-price">${item.price.toLocaleString()} تومان</p>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" onclick="changeCartItemQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="changeCartItemQuantity(${item.id}, parseInt(this.value))">
+                            <button class="quantity-btn" onclick="changeCartItemQuantity(${item.id}, ${item.quantity + 1})">+</button>
                         </div>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">حذف</button>
                     </div>
-                `).join('');
-            }
+                `;
+                cartItems.appendChild(cartItem);
+            });
             
-            // به روز رسانی جمع کل
+            // محاسبه و نمایش جمع کل
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotal.textContent = `${total.toLocaleString()} تومان`;
-            
-            // ذخیره در localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
         }
         
-        function changeQuantity(productId, newQuantity) {
-            if (newQuantity < 1) newQuantity = 1;
+        // تابع تغییر تعداد آیتم در سبد خرید
+        function changeCartItemQuantity(productId, newQuantity) {
+            if (newQuantity < 1) return;
             
             const item = cart.find(item => item.id === productId);
             if (item) {
                 item.quantity = newQuantity;
-                updateCart();
+                updateCartDisplay();
+                updateCartCount();
             }
         }
         
+        // تابع حذف از سبد خرید
         function removeFromCart(productId) {
             cart = cart.filter(item => item.id !== productId);
-            updateCart();
+            updateCartDisplay();
+            updateCartCount();
+            
+            // اگر سبد خرید خالی شد
+            if (cart.length === 0) {
+                const cartItems = document.getElementById('cart-items');
+                cartItems.innerHTML = '<div class="empty-cart">سبد خرید شما خالی است</div>';
+            }
         }
         
-        function toggleCart() {
-            document.getElementById('cart-popup').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-        
-        function closeCart() {
-            document.getElementById('cart-popup').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-        
+        // تابع باز کردن مودال اطلاعات کاربر
         function openUserInfoModal() {
             if (cart.length === 0) {
-                alert('سبد خرید شما خالی است!');
+                alert('سبد خرید شما خالی است.');
                 return;
             }
             
-            // پر کردن فیلدهای مخفی فرم با آیتم‌های سبد خرید
-            const orderItemsContainer = document.getElementById('order-items');
-            orderItemsContainer.innerHTML = '';
+            const userInfoModal = document.getElementById('user-info-modal');
+            const overlay = document.getElementById('overlay');
             
-            cart.forEach((item) => {
-                orderItemsContainer.innerHTML += `
-                    <input type="hidden" name="order_code" value="${item.id}">
-                    <input type="hidden" name="order_count" value="${item.quantity}">
-                `;
-            });
+            userInfoModal.classList.add('active');
+            overlay.classList.add('active');
             
-            // نمایش مودال اطلاعات کاربر
-            document.getElementById('user-info-modal').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-        
-        function closeUserInfoModal() {
-            document.getElementById('user-info-modal').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-        
-        function closeAllModals() {
+            // مخفی کردن سبد خرید
             closeCart();
+        }
+        
+        // تابع بستن مودال اطلاعات کاربر
+        function closeUserInfoModal() {
+            const userInfoModal = document.getElementById('user-info-modal');
+            const overlay = document.getElementById('overlay');
+            
+            userInfoModal.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        // تابع تولید فاکتور
+        function generateInvoice() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            
+            // اعتبارسنجی فرم
+            if (!name || !phone || !address) {
+                alert('لطفا تمامی فیلدهای اطلاعاتی را تکمیل کنید.');
+                return;
+            }
+            
+            // بستن مودال اطلاعات کاربر
             closeUserInfoModal();
-            closeCategories();
-        }
-        
-        // مدیریت علاقه‌مندی‌ها
-        function toggleWishlist(button, productId) {
-            const index = wishlist.indexOf(productId);
             
-            if (index === -1) {
-                // افزودن به علاقه‌مندی‌ها
-                wishlist.push(productId);
-                button.classList.add('active');
-            } else {
-                // حذف از علاقه‌مندی‌ها
-                wishlist.splice(index, 1);
-                button.classList.remove('active');
-            }
+            // نمایش اطلاعات در فاکتور
+            document.getElementById('invoice-name').textContent = name;
+            document.getElementById('invoice-phone').textContent = phone;
+            document.getElementById('invoice-address').textContent = address;
             
-            // ذخیره در localStorage
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        }
-        
-        // مدیریت تعداد محصول
-        function increaseProductQuantity(productId) {
-            const input = document.getElementById(`quantity-${productId}`);
-            input.value = parseInt(input.value) + 1;
-        }
-        
-        function decreaseProductQuantity(productId) {
-            const input = document.getElementById(`quantity-${productId}`);
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-            }
-        }
-        
-        // مدیریت دسته‌بندی‌ها
-        function toggleCategories() {
-            document.getElementById('categories-menu').classList.toggle('active');
-        }
-        
-        function closeCategories() {
-            document.getElementById('categories-menu').classList.remove('active');
-        }
-        
-        function filterProducts(category) {
-            const products = document.querySelectorAll('.product-card');
+            // افزودن آیتم‌های فاکتور
+            const invoiceItemsBody = document.getElementById('invoice-items-body');
+            invoiceItemsBody.innerHTML = '';
             
-            products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price.toLocaleString()}</td>
+                    <td>${itemTotal.toLocaleString()}</td>
+                `;
+                invoiceItemsBody.appendChild(row);
             });
             
-            closeCategories();
+            // نمایش جمع کل
+            document.getElementById('invoice-total').textContent = total.toLocaleString();
+            
+            // نمایش مودال فاکتور
+            const invoiceModal = document.getElementById('invoice-modal');
+            const overlay = document.getElementById('overlay');
+            
+            invoiceModal.classList.add('active');
+            overlay.classList.add('active');
         }
         
-        // توابع برای لینک‌های منو
-        function goToHome() {
-            window.location.href = '/';
+        // تابع بستن فاکتور
+        function closeInvoice() {
+            const invoiceModal = document.getElementById('invoice-modal');
+            const overlay = document.getElementById('overlay');
+            
+            invoiceModal.classList.remove('active');
+            overlay.classList.remove('active');
         }
         
-        function goToCategory(category) {
-            window.location.href = `/category/${category}`;
+        // تابع چاپ فاکتور
+        function printInvoice() {
+            const invoiceContent = document.getElementById('invoice-modal').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = invoiceContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            // بازگرداندن حالت اولیه
+            displayProducts();
         }
         
+        // تابع ارسال فاکتور به تلگرام
+        function sendToTelegram() {
+            const name = document.getElementById('invoice-name').textContent;
+            const phone = document.getElementById('invoice-phone').textContent;
+            const address = document.getElementById('invoice-address').textContent;
+            const total = document.getElementById('invoice-total').textContent;
+            
+            // ایجاد متن فاکتور
+            let invoiceText = `فاکتور خرید از هالستون\n`;
+            invoiceText += `نام مشتری: ${name}\n`;
+            invoiceText += `شماره تماس: ${phone}\n`;
+            invoiceText += `آدرس: ${address}\n\n`;
+            invoiceText += `محصولات:\n`;
+            
+            cart.forEach(item => {
+                invoiceText += `${item.name} - ${item.quantity} عدد - ${(item.price * item.quantity).toLocaleString()} تومان\n`;
+            });
+            
+            invoiceText += `\nجمع کل: ${total} تومان\n\n`;
+            invoiceText += `لطفا مبلغ را به شماره کارت ۶۲۱۹-۸۶۱۰-۶۵۰۹-۳۰۸۹ به نام آزیتا فتوحی مظفرنژاد واریز کرده و فیش پرداختی را ارسال کنید.`;
+            
+            // کد ربات تلگرام و چت آیدی باید در اینجا قرار گیرد
+            const telegramBotToken = 'YOUR_BOT_TOKEN'; // توکن ربات تلگرام
+            const chatId = 'YOUR_CHAT_ID'; // آیدی چت
+            
+            // در اینجا می‌توانید از fetch یا XMLHttpRequest برای ارسال به تلگرام استفاده کنید
+            // این بخش نیاز به پیکربندی سمت سرور دارد یا استفاده از CORS
+            alert('برای ارسال به تلگرام، باید توکن ربات و چت آیدی را تنظیم کنید. متن فاکتور آماده ارسال است.');
+            
+            // نمونه کد ارسال به تلگرام (نیاز به پیکربندی دارد):
+            
+            fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: invoiceText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('فاکتور با موفقیت به تلگرام ارسال شد.');
+                } else {
+                    alert('خطا در ارسال به تلگرام. لطفا بعدا تلاش کنید.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('خطا در ارسال به تلگرام.');
+            });
+           
+            
+            // در این نمونه، فقط یک پیام نمایش داده می‌شود
+            alert(`متن فاکتور آماده ارسال به تلگرام:\n\n${invoiceText}`);
+        }
+        
+        // تابع فیلتر محصولات
+        function filterProducts(category) {
+            currentFilter = category;
+            displayProducts();
+            
+            // بستن منوی دسته‌بندی در حالت موبایل
+            const categoriesMenu = document.getElementById('categories-menu');
+            categoriesMenu.classList.remove('active');
+        }
+        
+        // تابع نمایش همه محصولات
         function showAllProducts() {
             filterProducts('all');
         }
         
-        function showAccount() {
-            alert('صفحه حساب کاربری به زودی اضافه خواهد شد.');
+        // تابع نمایش/بستن منوی دسته‌بندی
+        function toggleCategories() {
+            const categoriesMenu = document.getElementById('categories-menu');
+            categoriesMenu.classList.toggle('active');
         }
         
-        function showWishlist() {
-            if (wishlist.length === 0) {
-                alert('لیست علاقه‌مندی‌های شما خالی است.');
-            } else {
-                alert('محصولات مورد علاقه شما: ' + wishlist.length + ' محصول');
-            }
+        // تابع بستن همه مودال‌ها
+        function closeAllModals() {
+            const cartPopup = document.getElementById('cart-popup');
+            const userInfoModal = document.getElementById('user-info-modal');
+            const invoiceModal = document.getElementById('invoice-modal');
+            const overlay = document.getElementById('overlay');
+            const categoriesMenu = document.getElementById('categories-menu');
+            
+            cartPopup.classList.remove('active');
+            userInfoModal.classList.remove('active');
+            invoiceModal.classList.remove('active');
+            overlay.classList.remove('active');
+            categoriesMenu.classList.remove('active');
+        }
+        
+        // تابع برگشت به خانه
+        function goToHome() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            filterProducts('all');
+        }
+        
+        // توابع نمونه برای سایر لینک‌ها
+        function showGuide() {
+            alert('راهنمای خرید در حال آماده‌سازی است.');
+        }
+        
+        function showAccount() {
+            alert('صفحه حساب کاربری در حال آماده‌سازی است.');
         }
         
         function showTracking() {
-            const orderId = prompt('لطفا شماره سفارش خود را وارد کنید:');
-            if (orderId) {
-                alert(`وضعیت سفارش ${orderId}: در حال پردازش`);
-            }
+            alert('سیستم پیگیری سفارش در حال آماده‌سازی است.');
         }
         
-        function showGuide() {
-            alert('راهنمای خرید به زودی اضافه خواهد شد.');
+        function showWishlist() {
+            alert('لیست علاقه‌مندی‌ها در حال آماده‌سازی است.');
         }
         
-        // بارگذاری صفحه
+        function toggleWishlist(productId) {
+            alert('امکان افزودن به علاقه‌مندی‌ها به زودی اضافه خواهد شد.');
+        }
+        
+        // مقداردهی اولیه هنگام لود صفحه
         document.addEventListener('DOMContentLoaded', function() {
             displayProducts();
-            updateCart();
             
-            // بارگذاری علاقه‌مندی‌ها
-            const wishlistButtons = document.querySelectorAll('.wishlist-btn');
-            wishlistButtons.forEach(button => {
-                const productId = button.getAttribute('onclick').split("'")[1];
-                if (wishlist.includes(productId)) {
-                    button.classList.add('active');
+            // بستن مودال‌ها با کلید ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeAllModals();
                 }
-            });
-            
-            // اضافه کردن event listener برای فرم
-            document.getElementById('order-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
-                const address = document.getElementById('address').value;
-                
-                if (!name || !phone || !address) {
-                    alert('لطفا تمامی فیلدهای ضروری را پر کنید.');
-                    return;
-                }
-                
-                // اگر همه چیز درست بود، فرم را سابمیت کن
-                this.submit();
             });
         });
     </script>
