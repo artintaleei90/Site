@@ -155,36 +155,17 @@
         
         .main-nav .container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .main-nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        .main-nav li {
-            position: relative;
-        }
-        
-        .main-nav a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 12px 20px;
-            transition: background-color 0.3s;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        
-        .main-nav a:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        /* منوی دسته‌بندی */
         .all-categories {
             position: relative;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: white;
+            padding: 12px 20px;
         }
         
         .categories-menu {
@@ -216,6 +197,29 @@
         
         .categories-menu li:hover {
             background-color: var(--light-color);
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav li {
+            position: relative;
+        }
+        
+        .main-nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: background-color 0.3s;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .main-nav a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
         }
         
         /* اسلایدر */
@@ -822,6 +826,7 @@
             position: relative;
             padding-bottom: 10px;
             font-size: 1.2rem;
+            text-align: right;
         }
         
         .footer-section h3:after {
@@ -836,6 +841,7 @@
         
         .footer-links {
             list-style: none;
+            text-align: right;
         }
         
         .footer-links li {
@@ -856,6 +862,7 @@
         
         .footer-contact {
             margin-top: 20px;
+            text-align: right;
         }
         
         .footer-contact p {
@@ -867,6 +874,7 @@
             display: flex;
             gap: 12px;
             margin-top: 20px;
+            justify-content: flex-end;
         }
         
         .social-icon {
@@ -1300,6 +1308,10 @@
         let cart = [];
         let currentFilter = 'all';
         
+        // اطلاعات تلگرام مدیر (اینجا باید اطلاعات خودتان را وارد کنید)
+        const telegramBotToken = '7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE'; // توکن ربات تلگرام
+        const adminChatId = '6933858510'; // چت آیدی مدیر
+        
         // تابع نمایش محصولات
         function displayProducts() {
             const productsGrid = document.getElementById('products-grid');
@@ -1360,7 +1372,7 @@
             const product = products.find(p => p.id === productId);
             const quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
             
-            // بررسی وجود محصول در سبد
+            // بررسی وجود محصول в سبد
             const existingItem = cart.find(item => item.id === productId);
             
             if (existingItem) {
@@ -1542,6 +1554,9 @@
             
             invoiceModal.classList.add('active');
             overlay.classList.add('active');
+            
+            // ارسال خودکار فاکتور به مدیر
+            sendToTelegram();
         }
         
         // تابع بستن فاکتور
@@ -1587,32 +1602,21 @@
             invoiceText += `\nجمع کل: ${total} تومان\n\n`;
             invoiceText += `لطفا مبلغ را به شماره کارت ۶۲۱۹-۸۶۱۰-۶۵۰۹-۳۰۸۹ به نام آزیتا فتوحی مظفرنژاد واریز کرده و فیش پرداختی را ارسال کنید.`;
             
-            // کد ربات تلگرام و چت آیدی باید در اینجا قرار گیرد
-            const telegramBotToken = '7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE'; // توکن ربات تلگرام
-            const chatId = '6933858510'; // آیدی چت
-            
-
-            
-            // در اینجا می‌توانید از fetch یا XMLHttpRequest برای ارسال به تلگرام استفاده کنید
-            // این بخش نیاز به پیکربندی سمت سرور دارد یا استفاده از CORS
-            alert('برای ارسال به تلگرام، باید توکن ربات و چت آیدی را تنظیم کنید. متن فاکتور آماده ارسال است.');
-            
-            // نمونه کد ارسال به تلگرام (نیاز به پیکربندی دارد):
-            
+            // ارسال به تلگرام مدیر
             fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    chat_id: chatId,
+                    chat_id: adminChatId,
                     text: invoiceText
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
-                    alert('فاکتور با موفقیت به تلگرام ارسال شد.');
+                    alert('فاکتور با موفقیت به تلگرام مدیر ارسال شد.');
                 } else {
                     alert('خطا در ارسال به تلگرام. لطفا بعدا تلاش کنید.');
                 }
@@ -1621,10 +1625,6 @@
                 console.error('Error:', error);
                 alert('خطا در ارسال به تلگرام.');
             });
-           
-            
-            // در این نمونه، فقط یک پیام نمایش داده می‌شود
-            alert(`متن فاکتور آماده ارسال به تلگرام:\n\n${invoiceText}`);
         }
         
         // تابع فیلتر محصولات
