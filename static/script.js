@@ -1,5 +1,5 @@
-const telegramBotToken = "توکن_ربات_تو";
-const adminChatId = "آیدی_مدیر";
+const telegramBotToken = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE";
+const adminChatId = "693385851";
 
 let cart = [];
 let currentFilter = 'all';
