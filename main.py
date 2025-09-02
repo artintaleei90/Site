@@ -10,14 +10,34 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 import requests
 import os
+from collections import defaultdict
 
 app = Flask(__name__)
 
 # ---------------------- محصولات ----------------------
 products = {
-    "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
-    "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "unit": "هزار تومان","category":"women","image":"https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
+    "3390": {
+        "name": "فری سایز - پک 6 عددی رنگ: در تصویر",
+        "price": 697000,
+        "unit": "هزار تومان",
+        "category": "زنانه",
+        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"
+    },
+    "1107": {
+        "name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی",
+        "price": 547000,
+        "unit": "هزار تومان",
+        "category": "زنانه",
+        "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"
+    },
 }
+
+# گروه‌بندی محصولات بر اساس دسته‌بندی
+def group_products_by_category():
+    grouped = defaultdict(list)
+    for code, data in products.items():
+        grouped[data["category"]].append({**data, "code": code})
+    return dict(grouped)
 
 # اطلاعات مدیر برای ارسال PDF
 ADMIN_CHAT_ID = 6933858510
@@ -32,10 +52,11 @@ pdfmetrics.registerFont(TTFont('Vazir', FONT_PATH))
 def reshape_text(text):
     return get_display(arabic_reshaper.reshape(text))
 
-# ---------------------- روت اصلی ----------------------
+# ---------------------- صفحه اصلی ----------------------
 @app.route('/')
 def index():
-    return render_template("index.html")
+    grouped_products = group_products_by_category()
+    return render_template("index.html", products=grouped_products)
 
 # ---------------------- API محصولات ----------------------
 @app.route('/api/products')
@@ -43,85 +64,56 @@ def api_products():
     return jsonify(products)
 
 # ---------------------- ثبت سفارش ----------------------
-@app.route('/api/order', methods=['POST'])
-def api_order():
+@app.route('/checkout', methods=['POST'])
+def checkout():
     data = request.json
-    name = data.get("name")
-    phone = data.get("phone")
-    address = data.get("address")
-    cart = data.get("cart")  # list of dicts: [{"code":"3390","count":2},...]
+    cart = data.get("cart", [])
 
-    filename = f"invoice_{phone}.pdf"
+    # ساخت فاکتور PDF
+    filename = "invoice.pdf"
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
-    y_start = height - 2*cm
+    y_start = height - 2 * cm
 
     # عنوان فاکتور
     c.setFont("Vazir", 16)
-    c.drawCentredString(width/2, y_start, reshape_text("🧾 فاکتور سفارش"))
-    y = y_start - 2*cm
-
-    # اطلاعات مشتری
-    c.setFont("Vazir", 12)
-    c.drawRightString(width - 2*cm, y, reshape_text(f"نام مشتری: {name}"))
-    y -= 1*cm
-    c.drawRightString(width - 2*cm, y, reshape_text(f"شماره تماس: {phone}"))
-    y -= 1*cm
-    c.drawRightString(width - 2*cm, y, reshape_text(f"آدرس: {address}"))
-    y -= 1.5*cm
+    c.drawCentredString(width / 2, y_start, reshape_text("🧾 فاکتور سفارش"))
+    y = y_start - 2 * cm
 
     # جدول محصولات
     table_data = [
-        [reshape_text("کد محصول"), reshape_text("نام محصول"), reshape_text("تعداد"), reshape_text("قیمت واحد"), reshape_text("مبلغ کل")]
+        [reshape_text("کد محصول"), reshape_text("نام محصول"), reshape_text("قیمت")]
     ]
     total = 0
     for item in cart:
         code = item["code"]
-        count = int(item["count"])
         product = products.get(code)
         if product:
             price = product["price"]
-            sum_price = price * count
-            total += sum_price
+            total += price
             table_data.append([
                 reshape_text(code),
                 reshape_text(product["name"]),
-                reshape_text(str(count)),
-                reshape_text(str(price)),
-                reshape_text(str(sum_price))
+                reshape_text(str(price))
             ])
 
-    table = Table(table_data, colWidths=[3*cm, 7*cm, 2*cm, 3*cm, 3*cm])
+    table = Table(table_data, colWidths=[3 * cm, 8 * cm, 4 * cm])
     style = TableStyle([
-        ('GRID', (0,0), (-1,-1), 1, colors.black),
-        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
-        ('FONTNAME', (0,0), (-1,-1), 'Vazir'),
-        ('FONTSIZE', (0,0), (-1,-1), 10),
-        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-        ('BOTTOMPADDING', (0,0), (-1,0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('FONTNAME', (0, 0), (-1, -1), 'Vazir'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
     ])
     table.setStyle(style)
     table.wrapOn(c, width, height)
-    table.drawOn(c, 2*cm, y - len(table_data)*1.2*cm)
-    y -= (len(table_data)*1.2*cm + 1*cm)
+    table.drawOn(c, 2 * cm, y - len(table_data) * 1.2 * cm)
+    y -= (len(table_data) * 1.2 * cm + 1 * cm)
 
     # جمع کل
-    c.drawRightString(width - 2*cm, y, reshape_text(f"جمع کل: {total} تومان"))
-    y -= 1*cm
-
-    # اطلاعات پرداخت
-    bank_info_lines = [    
-        "شماره :۰۹۱۲۸۸۸۳۳۴۳(واتساپ)",
-        "فاکتور رو برای شماره بالا ارسال و نهایی کنید",
-        "بانک سامان",
-        "به نام: آزیتا فتوحی مظفرنژاد",
-        "شماره کارت: 6219-8610-6509-3089",
-        "شماره شبا: IR44 0560 0832 8007 8294 0100 01"
-    ]
-    c.setFont("Vazir", 10)
-    for line in bank_info_lines:
-        c.drawRightString(width - 2*cm, y, reshape_text(line))
-        y -= 0.8*cm
+    c.drawRightString(width - 2 * cm, y, reshape_text(f"جمع کل: {total:,} تومان"))
+    y -= 1 * cm
 
     c.save()
 
@@ -130,8 +122,7 @@ def api_order():
     with open(filename, "rb") as f:
         requests.post(url, data={"chat_id": ADMIN_CHAT_ID}, files={"document": f})
 
-    # نمایش PDF به کاربر
-    return send_file(filename, as_attachment=True)
+    return jsonify({"status": "ok", "message": "فاکتور ارسال شد!"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
