@@ -1,80 +1,180 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halston Shop</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halston Shop</title>
+<style>
+body { font-family: 'Vazir', sans-serif; margin:0; background:#f5f5f5; }
+header { background:#333; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center; }
+header .logo { font-size:1.5rem; font-weight:bold; }
+header .cart-btn { background:#e91e63; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; color:white; }
+.products-grid { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
+.product-card { background:white; border-radius:10px; margin:10px; width:200px; padding:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:0.3s; cursor:pointer; }
+.product-card:hover { transform:translateY(-5px); }
+.product-card img { width:100%; border-radius:8px; }
+.product-info { text-align:center; margin-top:5px; }
+.product-name { font-weight:bold; }
+.product-price { color:#e91e63; margin:5px 0; }
+.add-btn { background:#3498db; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+.add-btn:hover { background:#2980b9; }
+.cart-sidebar { position:fixed; top:0; right:0; width:350px; height:100%; background:white; box-shadow:-2px 0 5px rgba(0,0,0,0.2); transform:translateX(100%); transition:0.3s; padding:20px; overflow-y:auto; z-index:1000; }
+.cart-sidebar.active { transform:translateX(0); }
+.cart-item { display:flex; align-items:center; margin-bottom:10px; }
+.cart-item img { width:50px; height:50px; border-radius:5px; margin-left:10px; }
+.cart-item-info { flex:1; }
+.remove-item { background:none; border:none; color:#e74c3c; font-size:18px; cursor:pointer; }
+#invoice-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.3); display:none; z-index:1100; width:90%; max-width:500px; max-height:80%; overflow:auto; }
+#invoice-modal h3 { text-align:center; margin-bottom:10px; }
+#overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1050; }
+button.close-invoice { background:#e91e63; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; float:left; }
+</style>
 </head>
 <body>
-    <!-- ================= Header ================= -->
-    <header>
-        <div class="top-header">
-            <span>تماس با ما: 09128883343</span>
-            <div>
-                <a href="#" id="favorites-btn">❤️ علاقه‌مندی‌ها</a>
-                <a href="#" id="cart-btn">🛒 سبد خرید <span class="cart-count" id="cart-count">0</span></a>
+
+<header>
+    <div class="logo">Halston Shop</div>
+    <button class="cart-btn" onclick="toggleCart()">🛒 سبد خرید <span id="cart-count">0</span></button>
+</header>
+
+<div class="products-grid" id="products-grid"></div>
+
+<!-- سایدبار سبد خرید -->
+<div class="cart-sidebar" id="cart-sidebar">
+    <h3>سبد خرید</h3>
+    <div id="cart-items"></div>
+    <hr>
+    <button onclick="showInvoice()" style="background:#e91e63;color:white;padding:10px 15px;border:none;border-radius:5px;cursor:pointer;width:100%;">مشاهده و چاپ فاکتور</button>
+</div>
+
+<!-- مودال فاکتور -->
+<div id="overlay"></div>
+<div id="invoice-modal">
+    <button class="close-invoice" onclick="closeInvoice()">❌</button>
+    <h3>فاکتور سفارش</h3>
+    <div id="invoice-content"></div>
+    <button onclick="downloadInvoice()" style="background:#3498db;color:white;border:none;padding:8px 12px;border-radius:5px;margin-top:10px;width:100%;cursor:pointer;">دانلود PDF</button>
+</div>
+
+<script>
+// ==== محصولات از main.py
+let products = {};
+let cart = {};
+fetch('/api/products')
+.then(res => res.json())
+.then(data => { products = data; renderProducts(); });
+
+function renderProducts() {
+    const grid = document.getElementById('products-grid');
+    grid.innerHTML='';
+    for(let code in products){
+        const p = products[code];
+        const card = document.createElement('div');
+        card.className='product-card';
+        card.innerHTML = `
+            <img src="${p.image}" alt="${p.name}">
+            <div class="product-info">
+                <div class="product-name">${p.name}</div>
+                <div class="product-price">${p.price} تومان</div>
+                <button class="add-btn">افزودن به سبد خرید</button>
+            </div>`;
+        card.querySelector('.add-btn').onclick = ()=>addToCart(code);
+        grid.appendChild(card);
+    }
+}
+
+function addToCart(code){
+    if(cart[code]) cart[code]++;
+    else cart[code]=1;
+    updateCart();
+}
+
+function updateCart(){
+    const cartSidebar = document.getElementById('cart-items');
+    cartSidebar.innerHTML='';
+    let count=0;
+    for(let code in cart){
+        const item = products[code];
+        const qty = cart[code];
+        count+=qty;
+        const div = document.createElement('div');
+        div.className='cart-item';
+        div.innerHTML = `
+            <img src="${item.image}">
+            <div class="cart-item-info">
+                <div>${item.name}</div>
+                <div>${item.price} x ${qty}</div>
             </div>
-        </div>
-        <div class="main-header">
-            <div class="logo">Halston Shop</div>
-            <div class="search-bar">
-                <input type="text" placeholder="جستجو...">
-                <button>🔍</button>
-            </div>
-        </div>
-    </header>
+            <button class="remove-item" onclick="removeCartItem('${code}')">🗑️</button>`;
+        cartSidebar.appendChild(div);
+    }
+    document.getElementById('cart-count').textContent=count;
+}
 
-    <!-- ================= Hero Slider ================= -->
-    <section class="hero-slider">
-        <div class="hero-slide active" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider1.jpeg');">
-            <div class="slide-content">
-                <h2>جدیدترین محصولات</h2>
-                <p>بهترین انتخاب‌ها در Halston Shop</p>
-            </div>
-        </div>
-        <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider2.jpeg');">
-            <div class="slide-content">
-                <h2>تخفیف ویژه</h2>
-                <p>همین حالا سفارش دهید و از تخفیف‌ها استفاده کنید!</p>
-            </div>
-        </div>
-        <button class="nav-btn prev-btn">❮</button>
-        <button class="nav-btn next-btn">❯</button>
-    </section>
+function removeCartItem(code){
+    delete cart[code];
+    updateCart();
+}
 
-    <!-- ================= Products ================= -->
-    <section class="products-section">
-        <div class="section-header">
-            <h2 class="section-title">محصولات</h2>
-        </div>
-        <div class="products-grid" id="products-grid">
-            <!-- محصولات با JS از /api/products لود می‌شوند -->
-        </div>
-    </section>
+function toggleCart(){
+    document.getElementById('cart-sidebar').classList.toggle('active');
+}
 
-    <!-- ================= Modal ================= -->
-    <div class="overlay" id="overlay"></div>
-    <div class="modal" id="product-modal">
-        <h3 id="modal-title">عنوان محصول</h3>
-        <img id="modal-image" src="" alt="" style="width:100%; border-radius:6px; margin-bottom:10px;">
-        <p id="modal-desc">توضیحات محصول</p>
-        <label for="modal-quantity">تعداد:</label>
-        <input type="number" id="modal-quantity" value="1" min="1">
-        <button id="modal-add">افزودن به سبد خرید</button>
-    </div>
+// ==== نمایش فاکتور آنلاین
+function showInvoice(){
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('invoice-modal');
+    const content = document.getElementById('invoice-content');
 
-    <!-- ================= Cart Sidebar ================= -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <h3>سبد خرید شما</h3>
-        <div id="cart-items"></div>
-        <div class="cart-footer">
-            <div>جمع کل: <span id="cart-total">0</span> تومان</div>
-            <button id="checkout-btn">ثبت سفارش و چاپ فاکتور</button>
-        </div>
-    </div>
+    let name = prompt("نام مشتری:");
+    let phone = prompt("شماره تماس:");
+    let address = prompt("آدرس:");
 
-    <!-- ================= Scripts ================= -->
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    let html = `<p>نام: ${name}</p><p>تلفن: ${phone}</p><p>آدرس: ${address}</p>`;
+    html+=`<table style="width:100%;border-collapse:collapse;">`;
+    html+=`<tr style="border-bottom:1px solid #ccc;"><th>کد</th><th>نام</th><th>تعداد</th><th>قیمت</th><th>مبلغ کل</th></tr>`;
+    let total=0;
+    for(let code in cart){
+        const p = products[code];
+        const qty = cart[code];
+        const sum = p.price*qty;
+        total+=sum;
+        html+=`<tr style="border-bottom:1px solid #ccc;"><td>${code}</td><td>${p.name}</td><td>${qty}</td><td>${p.price}</td><td>${sum}</td></tr>`;
+    }
+    html+=`<tr><td colspan="4" style="text-align:right;font-weight:bold;">جمع کل</td><td>${total}</td></tr>`;
+    html+='</table>';
+    content.innerHTML=html;
+
+    overlay.style.display='block';
+    modal.style.display='block';
+}
+
+// بستن فاکتور
+function closeInvoice(){
+    document.getElementById('overlay').style.display='none';
+    document.getElementById('invoice-modal').style.display='none';
+}
+
+// دانلود PDF از main.py
+function downloadInvoice(){
+    const name = prompt("نام مشتری:");
+    const phone = prompt("شماره تماس:");
+    const address = prompt("آدرس:");
+    const cartArray=[];
+    for(let code in cart) cartArray.push({code:code,count:cart[code]});
+    fetch('/api/order',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name, phone, address, cart:cartArray})
+    }).then(res=>res.blob())
+    .then(blob=>{
+        const url=window.URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download='invoice.pdf';
+        a.click();
+    });
+}
+</script>
 </body>
 </html>
