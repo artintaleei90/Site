@@ -1,199 +1,80 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Halston Shop</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<style>
-body { font-family: Vazir,sans-serif; margin:0; background:#f8f8f8; }
-header { background:#fff; box-shadow:0 3px 10px rgba(0,0,0,0.1); padding:10px 20px; position:sticky; top:0; z-index:1000; }
-.top-header { display:flex; justify-content:space-between; align-items:center; font-size:0.9rem; }
-.top-header a { margin-left:10px; text-decoration:none; color:#e91e63; }
-.main-header { display:flex; justify-content:space-between; align-items:center; margin-top:5px; }
-.logo { font-size:1.5rem; font-weight:bold; color:#e91e63; }
-.search-bar input { padding:5px 10px; border-radius:5px 0 0 5px; border:1px solid #ccc; width:200px; }
-.search-bar button { padding:5px 10px; border:1px solid #e91e63; background:#e91e63; color:#fff; border-radius:0 5px 5px 0; cursor:pointer; }
-
-.products-section { padding:20px; }
-.products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:15px; }
-.product-card { background:#fff; padding:10px; border-radius:10px; box-shadow:0 3px 6px rgba(0,0,0,0.1); cursor:pointer; transition:0.3s; }
-.product-card:hover { transform:translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,0.2);}
-.product-image { width:100%; height:150px; object-fit:cover; border-radius:8px; }
-.product-name { font-weight:bold; margin-top:5px; font-size:0.95rem; }
-.product-price { color:#e91e63; font-weight:bold; margin-top:5px; }
-.product-actions button { background:#e91e63; color:#fff; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-top:5px; width:100%; }
-
-.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1001; }
-.overlay.active { display:block; }
-.modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:10px; width:300px; z-index:1002; display:none; }
-.modal.active { display:block; }
-.modal h3 { margin:0 0 10px 0; color:#e91e63; }
-
-#cart-panel { position:fixed; top:60px; left:0; width:320px; height:100%; background:#fff; box-shadow:3px 0 6px rgba(0,0,0,0.2); padding:15px; overflow-y:auto; z-index:1000; }
-#cart-panel h3 { color:#e91e63; margin-bottom:15px; }
-.cart-item { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.cart-item img { width:50px; height:50px; object-fit:cover; border-radius:5px; margin-left:10px; }
-.cart-item-info { flex:1; }
-.cart-item-info span { display:block; }
-.cart-item button { background:#e91e63; color:#fff; border:none; border-radius:5px; cursor:pointer; padding:2px 5px; }
-
-#cart-total { font-weight:bold; margin-top:10px; color:#e91e63; text-align:right; }
-#cart-actions { margin-top:10px; display:flex; flex-direction:column; gap:8px; }
-#cart-actions button { width:100%; padding:8px; background:#e91e63; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halston Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- ================= Header ================= -->
+    <header>
+        <div class="top-header">
+            <span>تماس با ما: 09128883343</span>
+            <div>
+                <a href="#" id="favorites-btn">❤️ علاقه‌مندی‌ها</a>
+                <a href="#" id="cart-btn">🛒 سبد خرید <span class="cart-count" id="cart-count">0</span></a>
+            </div>
+        </div>
+        <div class="main-header">
+            <div class="logo">Halston Shop</div>
+            <div class="search-bar">
+                <input type="text" placeholder="جستجو...">
+                <button>🔍</button>
+            </div>
+        </div>
+    </header>
 
-<header>
-    <div class="top-header">
-        <span>تماس با ما: 09128883343</span>
-        <div>
-            <a href="#" id="favorites-btn">❤️ علاقه‌مندی‌ها</a>
-            <a href="#" id="cart-btn">🛒 سبد خرید <span class="cart-count" id="cart-count">0</span></a>
+    <!-- ================= Hero Slider ================= -->
+    <section class="hero-slider">
+        <div class="hero-slide active" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider1.jpeg');">
+            <div class="slide-content">
+                <h2>جدیدترین محصولات</h2>
+                <p>بهترین انتخاب‌ها در Halston Shop</p>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider2.jpeg');">
+            <div class="slide-content">
+                <h2>تخفیف ویژه</h2>
+                <p>همین حالا سفارش دهید و از تخفیف‌ها استفاده کنید!</p>
+            </div>
+        </div>
+        <button class="nav-btn prev-btn">❮</button>
+        <button class="nav-btn next-btn">❯</button>
+    </section>
+
+    <!-- ================= Products ================= -->
+    <section class="products-section">
+        <div class="section-header">
+            <h2 class="section-title">محصولات</h2>
+        </div>
+        <div class="products-grid" id="products-grid">
+            <!-- محصولات با JS از /api/products لود می‌شوند -->
+        </div>
+    </section>
+
+    <!-- ================= Modal ================= -->
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="product-modal">
+        <h3 id="modal-title">عنوان محصول</h3>
+        <img id="modal-image" src="" alt="" style="width:100%; border-radius:6px; margin-bottom:10px;">
+        <p id="modal-desc">توضیحات محصول</p>
+        <label for="modal-quantity">تعداد:</label>
+        <input type="number" id="modal-quantity" value="1" min="1">
+        <button id="modal-add">افزودن به سبد خرید</button>
+    </div>
+
+    <!-- ================= Cart Sidebar ================= -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <h3>سبد خرید شما</h3>
+        <div id="cart-items"></div>
+        <div class="cart-footer">
+            <div>جمع کل: <span id="cart-total">0</span> تومان</div>
+            <button id="checkout-btn">ثبت سفارش و چاپ فاکتور</button>
         </div>
     </div>
-    <div class="main-header">
-        <div class="logo">Halston Shop</div>
-        <div class="search-bar">
-            <input type="text" placeholder="جستجو...">
-            <button>🔍</button>
-        </div>
-    </div>
-</header>
 
-<section class="products-section">
-    <div class="section-header">
-        <h2 class="section-title">محصولات</h2>
-    </div>
-    <div class="products-grid" id="products-grid"></div>
-</section>
-
-<!-- Modal Product -->
-<div class="overlay" id="overlay"></div>
-<div class="modal" id="product-modal">
-    <h3 id="modal-title"></h3>
-    <img id="modal-image" src="" alt="" style="width:100%; border-radius:6px; margin-bottom:10px;">
-    <p id="modal-desc"></p>
-    <label>تعداد:</label>
-    <input type="number" id="modal-quantity" value="1" min="1">
-    <button id="modal-add">افزودن به سبد خرید</button>
-</div>
-
-<!-- Cart Panel -->
-<div id="cart-panel" style="display:none;">
-    <h3>سبد خرید</h3>
-    <div id="cart-items"></div>
-    <div id="cart-total">جمع کل: 0 تومان</div>
-    <div id="cart-actions">
-        <button id="print-invoice">چاپ فاکتور</button>
-        <button id="send-invoice">ارسال فاکتور</button>
-    </div>
-</div>
-
-<script>
-let products={}, cart={}, currentProduct=null;
-
-const productsGrid = document.getElementById('products-grid');
-const overlay = document.getElementById('overlay');
-const modal = document.getElementById('product-modal');
-const modalTitle = document.getElementById('modal-title');
-const modalImage = document.getElementById('modal-image');
-const modalDesc = document.getElementById('modal-desc');
-const modalQuantity = document.getElementById('modal-quantity');
-const modalAdd = document.getElementById('modal-add');
-
-const cartPanel = document.getElementById('cart-panel');
-const cartItems = document.getElementById('cart-items');
-const cartCount = document.getElementById('cart-count');
-const cartTotal = document.getElementById('cart-total');
-const printInvoiceBtn = document.getElementById('print-invoice');
-const sendInvoiceBtn = document.getElementById('send-invoice');
-
-const cartBtn = document.getElementById('cart-btn');
-cartBtn.addEventListener('click', ()=>cartPanel.style.display=cartPanel.style.display==='none'?'block':'none');
-
-fetch('/api/products')
-.then(res=>res.json())
-.then(data=>{ products=data; renderProducts(); });
-
-function renderProducts(){
-    productsGrid.innerHTML='';
-    for(let code in products){
-        const p = products[code];
-        const card = document.createElement('div');
-        card.className='product-card';
-        card.innerHTML=`<img class="product-image" src="${p.image}" alt="${p.name}">
-        <div class="product-info">
-            <div class="product-name">${p.name}</div>
-            <div class="product-price">${p.price} تومان</div>
-            <div class="product-actions"><button class="add-to-cart">افزودن</button></div>
-        </div>`;
-        card.querySelector('.product-image').addEventListener('click', ()=>openModal(code));
-        card.querySelector('.add-to-cart').addEventListener('click', ()=>openModal(code));
-        productsGrid.appendChild(card);
-    }
-}
-
-function openModal(code){
-    currentProduct=code;
-    const p = products[code];
-    modalTitle.textContent = p.name;
-    modalImage.src = p.image;
-    modalDesc.textContent = p.name;
-    modalQuantity.value=1;
-    modal.classList.add('active'); overlay.classList.add('active');
-}
-
-function closeModal(){ modal.classList.remove('active'); overlay.classList.remove('active'); }
-overlay.addEventListener('click', closeModal);
-
-modalAdd.addEventListener('click', ()=>{
-    const qty=parseInt(modalQuantity.value);
-    if(cart[currentProduct]) cart[currentProduct]+=qty; else cart[currentProduct]=qty;
-    updateCart(); closeModal();
-});
-
-function updateCart(){
-    cartItems.innerHTML='';
-    let total=0;
-    for(let code in cart){
-        const p=products[code], qty=cart[code], sum=p.price*qty;
-        total+=sum;
-        const div=document.createElement('div'); div.className='cart-item';
-        div.innerHTML=`<img src="${p.image}"><div class="cart-item-info"><span>${p.name}</span><span>تعداد: ${qty}</span><span>قیمت: ${sum} تومان</span></div>
-        <button onclick="removeFromCart('${code}')">❌</button>`;
-        cartItems.appendChild(div);
-    }
-    cartTotal.textContent=`جمع کل: ${total} تومان`;
-    cartCount.textContent=Object.values(cart).reduce((a,b)=>a+b,0);
-}
-
-function removeFromCart(code){ delete cart[code]; updateCart(); }
-
-// چاپ فاکتور
-printInvoiceBtn.addEventListener('click', ()=>sendInvoice(false));
-// ارسال فاکتور
-sendInvoiceBtn.addEventListener('click', ()=>sendInvoice(true));
-
-function sendInvoice(sendToServer){
-    const name = prompt("نام خود را وارد کنید:");
-    const phone = prompt("شماره تماس:");
-    const address = prompt("آدرس:");
-    const cartArray = [];
-    for(let code in cart) cartArray.push({code, count: cart[code]});
-    fetch('/api/order',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({name, phone, address, cart:cartArray})
-    }).then(res=>res.blob())
-    .then(blob=>{
-        const url=window.URL.createObjectURL(blob);
-        const a=document.createElement('a'); a.href=url; a.download='invoice.pdf';
-        if(!sendToServer) a.click(); // فقط چاپ
-        else alert("فاکتور ارسال شد!"); // فقط نمایش به کاربر
-    });
-}
-</script>
+    <!-- ================= Scripts ================= -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
