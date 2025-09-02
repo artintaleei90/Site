@@ -1,108 +1,213 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فروشگاه هالستون</title>
-    <link rel="stylesheet" href="/static/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halston | فروشگاه اینترنتی</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- هدر -->
-    <header class="header">
-        <div class="logo">🌸 هالستون شاپ</div>
-        <div class="cart-icon" onclick="openCart()">
-            🛒 <span id="cart-count">۰</span>
-        </div>
-    </header>
 
-    <!-- بخش محصولات -->
-    <main>
-        {% for category, items in products.items() %}
-        <section class="category-section">
-            <h2 class="category-title">{{ category }}</h2>
-            <div class="slider-container">
-                <button class="slider-btn left" onclick="slideLeft('{{ loop.index }}')">‹</button>
-                <div id="slider-{{ loop.index }}" class="products-slider">
-                    {% for item in items %}
-                    <div class="product-card">
-                        <img src="{{ item.image }}" alt="{{ item.name }}">
-                        <h3>{{ item.name }}</h3>
-                        <p class="price">{{ "{:,}".format(item.price) }} تومان</p>
-                        <button onclick="addToCart('{{ item.code }}', '{{ item.name }}', '{{ item.price }}')">افزودن به سبد</button>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="slider-btn right" onclick="slideRight('{{ loop.index }}')">›</button>
-            </div>
-        </section>
-        {% endfor %}
-    </main>
+<!-- Overlay مودال‌ها -->
+<div id="overlay" class="overlay" onclick="closeAllModals()"></div>
 
-    <!-- سبد خرید -->
-    <div id="cart-modal" class="cart-modal">
-        <div class="cart-content">
-            <h2>🛍️ سبد خرید شما</h2>
-            <ul id="cart-items"></ul>
-            <div class="cart-footer">
-                <p>جمع کل: <span id="total-price">۰</span> تومان</p>
-                <button id="checkout-btn" onclick="checkout()">ثبت سفارش</button>
-                <button class="close-btn" onclick="closeCart()">بستن</button>
-            </div>
-        </div>
+<!-- Header -->
+<header>
+  <div class="top-header">
+    <div class="container">
+      <div>تلفن: 09123456789 | ایمیل: info@halston.com</div>
+      <div class="top-links">
+        <a href="#" onclick="showWishlist()">علاقه‌مندی‌ها</a>
+        <a href="#">راهنما</a>
+        <a href="#">حساب کاربری</a>
+        <a href="#">پیگیری سفارش</a>
+      </div>
     </div>
+  </div>
+  <div class="main-header">
+    <div class="container">
+      <div class="logo">Halston</div>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="جستجوی محصولات..." oninput="searchProducts()">
+        <button>🔍</button>
+      </div>
+      <div class="header-actions">
+        <div class="cart-wrapper" onclick="toggleCart()">
+          🛒 <span id="cart-count">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 
-    <script>
-        let cart = [];
+<!-- Hero Slider -->
+<section class="hero-slider" id="hero-slider">
+  <div class="slide active" style="background-image:url('https://via.placeholder.com/1200x400?text=Slide+1');">
+    <div class="slide-text">
+      <h2>محصولات جدید</h2>
+      <p>جدیدترین و باکیفیت‌ترین محصولات فروشگاه ما</p>
+    </div>
+  </div>
+  <div class="slide" style="background-image:url('https://via.placeholder.com/1200x400?text=Slide+2');">
+    <div class="slide-text">
+      <h2>تخفیف ویژه</h2>
+      <p>تا 50٪ تخفیف برای مدت محدود</p>
+    </div>
+  </div>
+  <button class="prev" onclick="prevSlide()">&#10094;</button>
+  <button class="next" onclick="nextSlide()">&#10095;</button>
+</section>
 
-        function addToCart(code, name, price) {
-            cart.push({ code, name, price: parseInt(price) });
-            document.getElementById("cart-count").innerText = cart.length;
-            renderCart();
-        }
+<!-- Products Section -->
+<section class="products container">
+  <div id="products-grid" class="product-grid"></div>
+</section>
 
-        function renderCart() {
-            const cartList = document.getElementById("cart-items");
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            cartList.innerHTML = "";
-            cart.forEach(item => {
-                const li = document.createElement("li");
-                li.innerHTML = `${item.name} - ${item.price.toLocaleString()} تومان`;
-                cartList.appendChild(li);
-            });
-            document.getElementById("total-price").innerText = total.toLocaleString();
-        }
+<!-- Product Detail Modal -->
+<div id="product-modal" class="modal">
+  <button class="close-modal" onclick="closeAllModals()">×</button>
+  <div id="product-detail-content"></div>
+</div>
 
-        function openCart() {
-            document.getElementById("cart-modal").style.display = "flex";
-        }
+<!-- Cart Modal -->
+<div id="cart-popup" class="cart-popup">
+  <button class="close-cart" onclick="closeCart()">×</button>
+  <h3>سبد خرید</h3>
+  <div id="cart-items"></div>
+  <div class="cart-total">جمع کل: <span id="cart-total">0</span> تومان</div>
+  <button onclick="checkout()">ثبت سفارش</button>
+</div>
 
-        function closeCart() {
-            document.getElementById("cart-modal").style.display = "none";
-        }
+<!-- Wishlist Modal -->
+<div id="wishlist-popup" class="cart-popup">
+  <button class="close-cart" onclick="closeWishlist()">×</button>
+  <h3>علاقه‌مندی‌ها</h3>
+  <div id="wishlist-items"></div>
+</div>
 
-        function checkout() {
-            fetch("/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ cart })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert("✅ سفارش شما ثبت شد و فاکتور به تلگرام ارسال شد!");
-                cart = [];
-                document.getElementById("cart-count").innerText = "۰";
-                renderCart();
-                closeCart();
-            });
-        }
+<script>
+// ================== Hero Slider ==================
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slider .slide');
+function showSlide(i){
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[i].classList.add('active');
+}
+function nextSlide(){ currentSlide = (currentSlide+1)%slides.length; showSlide(currentSlide); }
+function prevSlide(){ currentSlide = (currentSlide-1+slides.length)%slides.length; showSlide(currentSlide); }
+setInterval(nextSlide,5000);
 
-        function slideLeft(id) {
-            document.getElementById("slider-" + id).scrollBy({ left: -300, behavior: "smooth" });
-        }
+// ================== Products ==================
+let products = {{ products | tojson }};
+let cart = [];
+let wishlist = [];
 
-        function slideRight(id) {
-            document.getElementById("slider-" + id).scrollBy({ left: 300, behavior: "smooth" });
-        }
-    </script>
+function renderProducts(filter=""){
+  const grid = document.getElementById('products-grid');
+  grid.innerHTML="";
+  Object.keys(products).forEach(code=>{
+    const p = products[code];
+    if(filter && !p.name.includes(filter)) return;
+    const card = document.createElement('div');
+    card.className='product-card';
+    card.innerHTML=`
+      <img src="${p.image}" onclick="showProductDetail('${code}')">
+      <div class="product-info">
+        <h4>${p.name}</h4>
+        <p>${p.price} تومان</p>
+        <button onclick="addToCart('${code}')">افزودن به سبد</button>
+        <button onclick="addToWishlist('${code}')">❤</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function searchProducts(){
+  const q = document.getElementById('search-input').value;
+  renderProducts(q);
+}
+
+function showProductDetail(code){
+  const p = products[code];
+  const modal = document.getElementById('product-modal');
+  modal.querySelector('#product-detail-content').innerHTML=`
+    <img src="${p.image}" style="width:200px; float:right; margin-left:10px;">
+    <h3>${p.name}</h3>
+    <p>${p.price} تومان</p>
+    <p>توضیحات کامل محصول...</p>
+    <button onclick="addToCart('${code}')">ثبت سفارش</button>
+  `;
+  modal.classList.add('active');
+  document.getElementById('overlay').classList.add('active');
+}
+
+// ================== Cart ==================
+function addToCart(code){
+  const item = products[code];
+  const count = prompt("تعداد را وارد کنید:", "1");
+  if(!count) return;
+  const existing = cart.find(c=>c.code===code);
+  if(existing){ existing.count = parseInt(existing.count)+parseInt(count); }
+  else { cart.push({code, count:parseInt(count)}); }
+  updateCart();
+}
+function updateCart(){
+  const cartDiv = document.getElementById('cart-items');
+  const totalDiv = document.getElementById('cart-total');
+  cartDiv.innerHTML="";
+  let total=0;
+  cart.forEach(item=>{
+    const p = products[item.code];
+    const subtotal = p.price * item.count;
+    total += subtotal;
+    const div = document.createElement('div');
+    div.innerHTML=`${p.name} x ${item.count} = ${subtotal} تومان <button onclick="removeFromCart('${item.code}')">×</button>`;
+    cartDiv.appendChild(div);
+  });
+  totalDiv.textContent = total;
+}
+function removeFromCart(code){
+  cart = cart.filter(c=>c.code!==code);
+  updateCart();
+}
+function toggleCart(){ document.getElementById('cart-popup').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
+function closeCart(){ document.getElementById('cart-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+function checkout(){
+  if(cart.length===0){ alert("سبد خرید خالی است"); return; }
+  alert("ثبت سفارش انجام شد!"); closeCart();
+}
+
+// ================== Wishlist ==================
+function addToWishlist(code){
+  if(!wishlist.includes(code)) wishlist.push(code);
+  updateWishlist();
+}
+function updateWishlist(){
+  const div = document.getElementById('wishlist-items');
+  div.innerHTML="";
+  wishlist.forEach(code=>{
+    const p = products[code];
+    const item = document.createElement('div');
+    item.innerHTML=`${p.name} <button onclick="removeFromWishlist('${code}')">×</button>`;
+    div.appendChild(item);
+  });
+}
+function removeFromWishlist(code){
+  wishlist = wishlist.filter(c=>c!==code);
+  updateWishlist();
+}
+function showWishlist(){ document.getElementById('wishlist-popup').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+function closeWishlist(){ document.getElementById('wishlist-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+
+// ================== Modals ==================
+function closeAllModals(){
+  document.querySelectorAll('.modal, .cart-popup').forEach(m=>m.classList.remove('active'));
+  document.getElementById('overlay').classList.remove('active');
+}
+
+// ================== Initial Render ==================
+renderProducts();
+</script>
+
 </body>
 </html>
