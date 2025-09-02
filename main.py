@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, send_from_directory, jsonify
+from flask import Flask, render_template, request, send_file, jsonify
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -20,9 +20,8 @@ products = {
 }
 
 # اطلاعات مدیر برای ارسال PDF
-#0
 ADMIN_CHAT_ID = 693385851
-TELEGRAM_TOKEN ="7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
+TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
 FONT_PATH = "Vazirmatn-Regular.ttf"
@@ -36,41 +35,21 @@ def reshape_text(text):
 # ---------------------- روت اصلی ----------------------
 @app.route('/')
 def index():
-    return render_template("index.html", products=products)
+    return render_template("index.html")
 
 # ---------------------- API محصولات ----------------------
 @app.route('/api/products')
 def api_products():
     return jsonify(products)
 
-# ---------------------- صفحه محصول ----------------------
-@app.route('/product')
-def product():
-    product_id = request.args.get('id')
-    product = products.get(product_id)
-    if product:
-        return render_template("product.html", product=product, product_id=product_id)
-    else:
-        return "محصول یافت نشد", 404
-
-# ---------------------- دسته‌بندی محصولات ----------------------
-@app.route('/contact')
-def contact():
-    return "<h1>تماس با ما</h1><p>شماره تماس: 0912xxxxxxx</p>"
-
-@app.route('/category/<category_name>')
-def category(category_name):
-    filtered_products = {k:v for k,v in products.items() if v.get("category") == category_name}
-    return render_template("index.html", products=filtered_products)
-
 # ---------------------- ثبت سفارش ----------------------
-@app.route('/order', methods=['POST'])
-def order():
-    name = request.form.get("name")
-    phone = request.form.get("phone")
-    address = request.form.get("address")
-    order_codes = request.form.getlist("order_code")
-    order_counts = request.form.getlist("order_count")
+@app.route('/api/order', methods=['POST'])
+def api_order():
+    data = request.json
+    name = data.get("name")
+    phone = data.get("phone")
+    address = data.get("address")
+    cart = data.get("cart")  # list of dicts: [{"code":"3390","count":2},...]
 
     filename = f"invoice_{phone}.pdf"
     c = canvas.Canvas(filename, pagesize=A4)
@@ -96,8 +75,9 @@ def order():
         [reshape_text("کد محصول"), reshape_text("نام محصول"), reshape_text("تعداد"), reshape_text("قیمت واحد"), reshape_text("مبلغ کل")]
     ]
     total = 0
-    for code, count in zip(order_codes, order_counts):
-        count = int(count)
+    for item in cart:
+        code = item["code"]
+        count = int(item["count"])
         product = products.get(code)
         if product:
             price = product["price"]
@@ -153,10 +133,5 @@ def order():
     # نمایش PDF به کاربر
     return send_file(filename, as_attachment=True)
 
-# ---------------------- روت گوگل ورریفیکیشن ----------------------
-@app.route('/googlef45b12f9e985ca0c.html')
-def google_verify():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'googlef45b12f9e985ca0c.html')
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
