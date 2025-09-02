@@ -20,7 +20,7 @@ products = {
 }
 
 # اطلاعات مدیر برای ارسال PDF
-ADMIN_CHAT_ID = 693385851
+ADMIN_CHAT_ID = 6933858510
 TELEGRAM_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 
 # ثبت فونت فارسی
