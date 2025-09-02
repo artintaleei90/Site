@@ -1,213 +1,169 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Halston | فروشگاه اینترنتی</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halston Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<!-- Overlay مودال‌ها -->
-<div id="overlay" class="overlay" onclick="closeAllModals()"></div>
-
-<!-- Header -->
+<!-- ================= Header ================= -->
 <header>
-  <div class="top-header">
-    <div class="container">
-      <div>تلفن: 09123456789 | ایمیل: info@halston.com</div>
-      <div class="top-links">
-        <a href="#" onclick="showWishlist()">علاقه‌مندی‌ها</a>
-        <a href="#">راهنما</a>
-        <a href="#">حساب کاربری</a>
-        <a href="#">پیگیری سفارش</a>
-      </div>
-    </div>
-  </div>
-  <div class="main-header">
-    <div class="container">
-      <div class="logo">Halston</div>
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="جستجوی محصولات..." oninput="searchProducts()">
-        <button>🔍</button>
-      </div>
-      <div class="header-actions">
-        <div class="cart-wrapper" onclick="toggleCart()">
-          🛒 <span id="cart-count">0</span>
+    <div class="top-header">
+        <span>تماس با ما: 09128883343</span>
+        <div>
+            <a href="#" id="favorites-btn">❤️ علاقه‌مندی‌ها</a>
+            <a href="#" id="cart-btn">🛒 سبد خرید <span class="cart-count" id="cart-count">0</span></a>
         </div>
-      </div>
     </div>
-  </div>
+    <div class="main-header">
+        <div class="logo">Halston Shop</div>
+        <div class="search-bar">
+            <input type="text" placeholder="جستجو...">
+            <button>🔍</button>
+        </div>
+    </div>
 </header>
 
-<!-- Hero Slider -->
-<section class="hero-slider" id="hero-slider">
-  <div class="slide active" style="background-image:url('https://via.placeholder.com/1200x400?text=Slide+1');">
-    <div class="slide-text">
-      <h2>محصولات جدید</h2>
-      <p>جدیدترین و باکیفیت‌ترین محصولات فروشگاه ما</p>
+<!-- ================= Hero Slider ================= -->
+<section class="hero-slider">
+    <div class="hero-slide active" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider1.jpeg');">
+        <div class="slide-content">
+            <h2>جدیدترین محصولات</h2>
+            <p>بهترین انتخاب‌ها در Halston Shop</p>
+        </div>
     </div>
-  </div>
-  <div class="slide" style="background-image:url('https://via.placeholder.com/1200x400?text=Slide+2');">
-    <div class="slide-text">
-      <h2>تخفیف ویژه</h2>
-      <p>تا 50٪ تخفیف برای مدت محدود</p>
+    <div class="hero-slide" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider2.jpeg');">
+        <div class="slide-content">
+            <h2>تخفیف ویژه</h2>
+            <p>همین حالا سفارش دهید و از تخفیف‌ها استفاده کنید!</p>
+        </div>
     </div>
-  </div>
-  <button class="prev" onclick="prevSlide()">&#10094;</button>
-  <button class="next" onclick="nextSlide()">&#10095;</button>
+    <button class="nav-btn prev-btn">❮</button>
+    <button class="nav-btn next-btn">❯</button>
 </section>
 
-<!-- Products Section -->
-<section class="products container">
-  <div id="products-grid" class="product-grid"></div>
+<!-- ================= Products ================= -->
+<section class="products-section">
+    <div class="section-header">
+        <h2 class="section-title">محصولات</h2>
+    </div>
+    <div class="products-grid" id="products-grid">
+        <!-- محصولات با JS از /api/products لود می‌شوند -->
+    </div>
 </section>
 
-<!-- Product Detail Modal -->
-<div id="product-modal" class="modal">
-  <button class="close-modal" onclick="closeAllModals()">×</button>
-  <div id="product-detail-content"></div>
+<!-- ================= Modal ================= -->
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="product-modal">
+    <h3 id="modal-title">عنوان محصول</h3>
+    <img id="modal-image" src="" alt="" style="width:100%; border-radius:6px; margin-bottom:10px;">
+    <p id="modal-desc">توضیحات محصول</p>
+    <label for="modal-quantity">تعداد:</label>
+    <input type="number" id="modal-quantity" value="1" min="1">
+    <button id="modal-add">افزودن به سبد خرید</button>
 </div>
 
-<!-- Cart Modal -->
-<div id="cart-popup" class="cart-popup">
-  <button class="close-cart" onclick="closeCart()">×</button>
-  <h3>سبد خرید</h3>
-  <div id="cart-items"></div>
-  <div class="cart-total">جمع کل: <span id="cart-total">0</span> تومان</div>
-  <button onclick="checkout()">ثبت سفارش</button>
-</div>
-
-<!-- Wishlist Modal -->
-<div id="wishlist-popup" class="cart-popup">
-  <button class="close-cart" onclick="closeWishlist()">×</button>
-  <h3>علاقه‌مندی‌ها</h3>
-  <div id="wishlist-items"></div>
-</div>
-
+<!-- ================= Scripts ================= -->
 <script>
-// ================== Hero Slider ==================
-let currentSlide = 0;
-const slides = document.querySelectorAll('.hero-slider .slide');
-function showSlide(i){
-  slides.forEach(s=>s.classList.remove('active'));
-  slides[i].classList.add('active');
+let products = {};
+let cart = {};
+
+const productsGrid = document.getElementById('products-grid');
+const overlay = document.getElementById('overlay');
+const modal = document.getElementById('product-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalImage = document.getElementById('modal-image');
+const modalDesc = document.getElementById('modal-desc');
+const modalQuantity = document.getElementById('modal-quantity');
+const modalAdd = document.getElementById('modal-add');
+const cartCount = document.getElementById('cart-count');
+let currentProduct = null;
+
+// دریافت محصولات از main.py
+fetch('/api/products')
+.then(res => res.json())
+.then(data => {
+    products = data;
+    renderProducts();
+});
+
+function renderProducts() {
+    productsGrid.innerHTML = '';
+    for (let code in products) {
+        const p = products[code];
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img class="product-image" src="${p.image}" alt="${p.name}">
+            <div class="product-info">
+                <div class="product-name">${p.name}</div>
+                <div class="product-price">${p.price} تومان</div>
+                <div class="product-actions">
+                    <button class="add-to-cart">افزودن</button>
+                </div>
+            </div>
+        `;
+        card.querySelector('.product-image').addEventListener('click', () => openModal(code));
+        card.querySelector('.add-to-cart').addEventListener('click', () => openModal(code));
+        productsGrid.appendChild(card);
+    }
 }
-function nextSlide(){ currentSlide = (currentSlide+1)%slides.length; showSlide(currentSlide); }
-function prevSlide(){ currentSlide = (currentSlide-1+slides.length)%slides.length; showSlide(currentSlide); }
-setInterval(nextSlide,5000);
 
-// ================== Products ==================
-let products = {{ products | tojson }};
-let cart = [];
-let wishlist = [];
-
-function renderProducts(filter=""){
-  const grid = document.getElementById('products-grid');
-  grid.innerHTML="";
-  Object.keys(products).forEach(code=>{
+function openModal(code) {
+    currentProduct = code;
     const p = products[code];
-    if(filter && !p.name.includes(filter)) return;
-    const card = document.createElement('div');
-    card.className='product-card';
-    card.innerHTML=`
-      <img src="${p.image}" onclick="showProductDetail('${code}')">
-      <div class="product-info">
-        <h4>${p.name}</h4>
-        <p>${p.price} تومان</p>
-        <button onclick="addToCart('${code}')">افزودن به سبد</button>
-        <button onclick="addToWishlist('${code}')">❤</button>
-      </div>`;
-    grid.appendChild(card);
-  });
+    modalTitle.textContent = p.name;
+    modalImage.src = p.image;
+    modalDesc.textContent = p.name; // توضیحات کوتاه
+    modalQuantity.value = 1;
+    modal.classList.add('active');
+    overlay.classList.add('active');
 }
 
-function searchProducts(){
-  const q = document.getElementById('search-input').value;
-  renderProducts(q);
+function closeModal() {
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
 }
 
-function showProductDetail(code){
-  const p = products[code];
-  const modal = document.getElementById('product-modal');
-  modal.querySelector('#product-detail-content').innerHTML=`
-    <img src="${p.image}" style="width:200px; float:right; margin-left:10px;">
-    <h3>${p.name}</h3>
-    <p>${p.price} تومان</p>
-    <p>توضیحات کامل محصول...</p>
-    <button onclick="addToCart('${code}')">ثبت سفارش</button>
-  `;
-  modal.classList.add('active');
-  document.getElementById('overlay').classList.add('active');
-}
+overlay.addEventListener('click', closeModal);
+modalAdd.addEventListener('click', () => {
+    const qty = parseInt(modalQuantity.value);
+    if (cart[currentProduct]) cart[currentProduct] += qty;
+    else cart[currentProduct] = qty;
+    cartCount.textContent = Object.values(cart).reduce((a,b)=>a+b,0);
+    closeModal();
+});
 
-// ================== Cart ==================
-function addToCart(code){
-  const item = products[code];
-  const count = prompt("تعداد را وارد کنید:", "1");
-  if(!count) return;
-  const existing = cart.find(c=>c.code===code);
-  if(existing){ existing.count = parseInt(existing.count)+parseInt(count); }
-  else { cart.push({code, count:parseInt(count)}); }
-  updateCart();
+// چاپ فاکتور
+function printInvoice() {
+    const name = prompt("نام خود را وارد کنید:");
+    const phone = prompt("شماره تماس:");
+    const address = prompt("آدرس:");
+    const cartArray = [];
+    for (let code in cart) {
+        cartArray.push({code: code, count: cart[code]});
+    }
+    fetch('/api/order', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, phone, address, cart: cartArray})
+    }).then(res => res.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'invoice.pdf';
+        a.click();
+    });
 }
-function updateCart(){
-  const cartDiv = document.getElementById('cart-items');
-  const totalDiv = document.getElementById('cart-total');
-  cartDiv.innerHTML="";
-  let total=0;
-  cart.forEach(item=>{
-    const p = products[item.code];
-    const subtotal = p.price * item.count;
-    total += subtotal;
-    const div = document.createElement('div');
-    div.innerHTML=`${p.name} x ${item.count} = ${subtotal} تومان <button onclick="removeFromCart('${item.code}')">×</button>`;
-    cartDiv.appendChild(div);
-  });
-  totalDiv.textContent = total;
-}
-function removeFromCart(code){
-  cart = cart.filter(c=>c.code!==code);
-  updateCart();
-}
-function toggleCart(){ document.getElementById('cart-popup').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
-function closeCart(){ document.getElementById('cart-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
-function checkout(){
-  if(cart.length===0){ alert("سبد خرید خالی است"); return; }
-  alert("ثبت سفارش انجام شد!"); closeCart();
-}
-
-// ================== Wishlist ==================
-function addToWishlist(code){
-  if(!wishlist.includes(code)) wishlist.push(code);
-  updateWishlist();
-}
-function updateWishlist(){
-  const div = document.getElementById('wishlist-items');
-  div.innerHTML="";
-  wishlist.forEach(code=>{
-    const p = products[code];
-    const item = document.createElement('div');
-    item.innerHTML=`${p.name} <button onclick="removeFromWishlist('${code}')">×</button>`;
-    div.appendChild(item);
-  });
-}
-function removeFromWishlist(code){
-  wishlist = wishlist.filter(c=>c!==code);
-  updateWishlist();
-}
-function showWishlist(){ document.getElementById('wishlist-popup').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
-function closeWishlist(){ document.getElementById('wishlist-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
-
-// ================== Modals ==================
-function closeAllModals(){
-  document.querySelectorAll('.modal, .cart-popup').forEach(m=>m.classList.remove('active'));
-  document.getElementById('overlay').classList.remove('active');
-}
-
-// ================== Initial Render ==================
-renderProducts();
 </script>
+
+<!-- ================= Cart Print Button ================= -->
+<div style="position:fixed; bottom:20px; left:20px; z-index:1002;">
+    <button onclick="printInvoice()" style="background: #e91e63; color:white; border:none; padding:12px 20px; border-radius:8px; font-size:1rem; cursor:pointer;">چاپ فاکتور</button>
+</div>
 
 </body>
 </html>
