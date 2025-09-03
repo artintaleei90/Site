@@ -16,7 +16,7 @@ from bidi.algorithm import get_display
 # ---------------- CONFIG ----------------
 TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 ADMIN_CHAT_ID = 6933858510  # جایگذاری با chat id خودت
-WEBHOOK_URL = "https://<YOUR-RENDER-DOMAIN>/webhook"  # لینک وبهوک روی Render
+WEBHOOK_URL = "https://halstonshop.onrender.com/webhook"
 
 FONT_PATH = "Vazirmatn-Regular.ttf"
 
