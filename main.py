@@ -14,7 +14,7 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 
 # ---------------- CONFIG ----------------
-TOKEN = "توکن_ربات_خودت"
+TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 ADMIN_CHAT_ID = 6933858510  # جایگزین کن
 FONT_PATH = "Vazirmatn-Regular.ttf"
 
