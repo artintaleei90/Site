@@ -219,12 +219,7 @@ def api_order():
 # ---------------- Keep Flask running in a thread and start telebot ----------------
 def run_flask():
     app.run(host='0.0.0.0', port=8080)
-
 if __name__ == "__main__":
-    # start flask in a background thread (so bot can run)
-    t = Thread(target=run_flask, daemon=True)
-    t.start()
-    # then start polling bot (this will block)
-    print("Starting bot polling...")
-    bot.remove_webhook()
+    from threading import Thread
+    Thread(target=lambda: app.run(host="0.0.0.0", port=8080)).start()
     bot.infinity_polling()
