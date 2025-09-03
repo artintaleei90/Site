@@ -1,14 +1,16 @@
-from flask import Flask, jsonify, request, send_file, render_template_string
+from flask import Flask, jsonify, request, send_file, render_template
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 import telebot
+import json
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
-# توکن ربات تلگرام
+# تنظیمات ربات تلگرام
 BOT_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
 ADMIN_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"  # آیدی عددی ادمین
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -29,28 +31,30 @@ products = {
     }
 }
 
+# صفحه اصلی
+@app.route("/")
+def home():
+    return render_template("index.html")  # فایل HTML اصلی فروشگاه
+
 # API محصولات
 @app.route("/api/products")
 def api_products():
     return jsonify(products)
 
-# تولید فاکتور و ارسال PDF
+# تولید فاکتور و ارسال PDF به تلگرام
 @app.route("/invoice", methods=["GET"])
 def invoice():
     try:
-        # دریافت اطلاعات مشتری از URL
         name = request.args.get("name")
         phone = request.args.get("phone")
         city = request.args.get("city")
         address = request.args.get("address")
-        cart = request.args.get("cart")
+        cart_data = request.args.get("cart")
 
         if not name or not phone or not address:
             return "اطلاعات ناقص است!", 400
 
-        # تبدیل سبد خرید از JSON
-        import json
-        cart = json.loads(cart) if cart else {}
+        cart = json.loads(cart_data) if cart_data else {}
 
         # ساخت PDF در حافظه
         buffer = BytesIO()
@@ -95,6 +99,7 @@ def invoice():
 
         buffer.seek(0)
         return send_file(buffer, as_attachment=False, download_name="invoice.pdf", mimetype="application/pdf")
+
     except Exception as e:
         return f"خطا در ساخت فاکتور: {e}", 500
 
