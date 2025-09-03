@@ -26,7 +26,6 @@
     </div>
 </header>
 
-<!-- Hero slider -->
 <section class="hero container" id="hero">
     <div class="slides">
         <div class="slide active" style="background-image:url('https://raw.githubusercontent.com/artintaleei90/Site/main/slider1.jpeg')">
@@ -40,12 +39,10 @@
     <button class="hero-nav next" id="hero-next">›</button>
 </section>
 
-<!-- Products grouped by category; rows scrollable horizontally -->
 <main class="container">
     <div id="categories-container"></div>
 </main>
 
-<!-- Cart drawer/modal -->
 <div id="overlay" class="overlay hidden"></div>
 <aside id="cart-drawer" class="cart-drawer hidden">
     <header class="drawer-header">
@@ -59,7 +56,6 @@
     </footer>
 </aside>
 
-<!-- Invoice modal with iframe preview -->
 <div id="invoice-modal" class="modal hidden">
     <div class="modal-inner">
         <header><h3>فاکتور خرید</h3><button id="close-invoice">✕</button></header>
@@ -75,326 +71,11 @@
             </div>
         </div>
         <footer>
-            <button id="send-invoice-btn" class="primary">ارسال و نهایی (ارسال به تلگرام و دانلود)</button>
+            <button id="send-invoice-btn" class="primary">ارسال و نهایی</button>
         </footer>
     </div>
 </div>
 
-<script>
-/* ========= Frontend (all inline) ========= */
-const productsByCode = {};
-let categories = {};
-let cart = {}; // {code: qty}
-
-const categoriesContainer = document.getElementById('categories-container');
-const cartBadge = document.getElementById('cart-badge');
-const overlay = document.getElementById('overlay');
-const cartDrawer = document.getElementById('cart-drawer');
-const cartItemsEl = document.getElementById('cart-items');
-const cartSummaryEl = document.getElementById('cart-summary');
-
-const invoiceModal = document.getElementById('invoice-modal');
-const invoiceFrame = document.getElementById('invoice-frame');
-const sendInvoiceBtn = document.getElementById('send-invoice-btn');
-
-async function loadProducts(){
-    const res = await fetch('/api/products');
-    const data = await res.json();
-    // normalize: products may be dict keyed by code
-    categories = {};
-    for(const code in data){
-        const p = data[code];
-        productsByCode[code] = {...p, code};
-        const cat = p.category || 'all';
-        if(!categories[cat]) categories[cat] = [];
-        categories[cat].push({...p, code});
-    }
-    renderCategories();
-}
-
-function renderCategories(){
-    categoriesContainer.innerHTML = '';
-    for(const cat in categories){
-        const row = document.createElement('section');
-        row.className = 'category-row';
-        row.innerHTML = `
-            <div class="row-header">
-                <h3>${cat === 'all' ? 'همه محصولات' : cat}</h3>
-                <div class="row-controls">
-                    <button class="scroll-left">‹</button>
-                    <button class="scroll-right">›</button>
-                </div>
-            </div>
-            <div class="row-content"></div>
-        `;
-        const content = row.querySelector('.row-content');
-        categories[cat].forEach(p => {
-            const card = document.createElement('article');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="p-image"><img src="${p.image}" alt="${p.name}"></div>
-                <div class="p-body">
-                    <h4 class="p-title">${p.name}</h4>
-                    <div class="p-price">${Number(p.price).toLocaleString()} تومان</div>
-                    <div class="p-actions">
-                        <button class="btn-details" data-code="${p.code}">جزئیات</button>
-                        <button class="btn-add" data-code="${p.code}">افزودن</button>
-                    </div>
-                </div>
-            `;
-            content.appendChild(card);
-        });
-
-        // scrolling controls
-        row.querySelector('.scroll-left').addEventListener('click', ()=> {
-            content.scrollBy({left: -360, behavior: 'smooth'});
-        });
-        row.querySelector('.scroll-right').addEventListener('click', ()=> {
-            content.scrollBy({left: 360, behavior: 'smooth'});
-        });
-
-        categoriesContainer.appendChild(row);
-    }
-
-    // attach handlers
-    document.querySelectorAll('.btn-add').forEach(btn=>{
-        btn.addEventListener('click', e=>{
-            const code = e.currentTarget.dataset.code;
-            openQtyModal(code);
-        });
-    });
-    document.querySelectorAll('.btn-details').forEach(btn=>{
-        btn.addEventListener('click', e=>{
-            const code = e.currentTarget.dataset.code;
-            openDetailsModal(code);
-        });
-    });
-}
-
-/* Simple details modal built on top of invoice modal to avoid extra markup */
-function openDetailsModal(code){
-    const p = productsByCode[code];
-    // reuse invoice modal area as a simple details + add quantity overlay
-    document.getElementById('cust-name').value = document.getElementById('cust-name').value; // noop to ensure fields exist
-    // show a quick prompt-like modal
-    const qty = prompt(`${p.name}\nقیمت: ${Number(p.price).toLocaleString()} تومان\n\nتعداد را وارد کنید:`, "1");
-    const q = parseInt(qty);
-    if(!isNaN(q) && q>0){
-        addToCart(code, q);
-    }
-}
-
-function openQtyModal(code){
-    // show a small prompt to take quantity
-    const q = prompt("تعداد را وارد کنید:", "1");
-    const qty = parseInt(q);
-    if(!isNaN(qty) && qty > 0){
-        addToCart(code, qty);
-    }
-}
-
-function addToCart(code, qty=1){
-    if(cart[code]) cart[code] += qty;
-    else cart[code] = qty;
-    updateCartUI();
-    // show small toast
-    toast("به سبد خرید اضافه شد");
-}
-
-function updateCartUI(){
-    // badge
-    const count = Object.values(cart).reduce((a,b)=>a+b,0);
-    cartBadge.textContent = count;
-    // render drawer items
-    cartItemsEl.innerHTML = '';
-    let total = 0;
-    for(const code in cart){
-        const p = productsByCode[code];
-        const qty = cart[code];
-        const item = document.createElement('div');
-        item.className = 'cart-row';
-        item.innerHTML = `
-            <img src="${p.image}" alt="${p.name}">
-            <div class="info">
-                <div class="name">${p.name}</div>
-                <div class="meta">${Number(p.price).toLocaleString()} × ${qty} = ${Number(p.price*qty).toLocaleString()} تومان</div>
-                <div class="controls">
-                    <button class="dec" data-code="${code}">-</button>
-                    <span class="qty">${qty}</span>
-                    <button class="inc" data-code="${code}">+</button>
-                    <button class="remove" data-code="${code}">حذف</button>
-                </div>
-            </div>
-        `;
-        cartItemsEl.appendChild(item);
-        total += p.price * qty;
-    }
-    cartSummaryEl.textContent = `جمع کل: ${Number(total).toLocaleString()} تومان`;
-
-    // attach cart item buttons
-    cartItemsEl.querySelectorAll('.inc').forEach(b=>{
-        b.addEventListener('click', e=>{
-            const code = e.currentTarget.dataset.code;
-            cart[code] += 1;
-            updateCartUI();
-        });
-    });
-    cartItemsEl.querySelectorAll('.dec').forEach(b=>{
-        b.addEventListener('click', e=>{
-            const code = e.currentTarget.dataset.code;
-            if(cart[code] > 1) cart[code] -= 1;
-            else delete cart[code];
-            updateCartUI();
-        });
-    });
-    cartItemsEl.querySelectorAll('.remove').forEach(b=>{
-        b.addEventListener('click', e=>{
-            const code = e.currentTarget.dataset.code;
-            delete cart[code];
-            updateCartUI();
-        });
-    });
-}
-
-/* Drawer open/close */
-document.getElementById('cart-open-btn').addEventListener('click', ()=>{
-    renderCartAndOpen();
-});
-document.getElementById('cart-close').addEventListener('click', ()=>{
-    cartDrawer.classList.add('hidden');
-    overlay.classList.add('hidden');
-});
-overlay.addEventListener('click', ()=>{
-    cartDrawer.classList.add('hidden');
-    overlay.classList.add('hidden');
-    invoiceModal.classList.add('hidden');
-    document.getElementById('invoice-frame').src = '';
-});
-
-function renderCartAndOpen(){
-    updateCartUI();
-    cartDrawer.classList.remove('hidden');
-    overlay.classList.remove('hidden');
-}
-
-/* Invoice flow */
-document.getElementById('view-invoice').addEventListener('click', ()=> {
-    // open invoice modal (customer fills info) and render preview after calling /api/order as blob
-    if(Object.keys(cart).length === 0){
-        alert("سبد خرید خالی است");
-        return;
-    }
-    invoiceModal.classList.remove('hidden');
-    overlay.classList.remove('hidden');
-});
-
-// Close invoice modal
-document.getElementById('close-invoice').addEventListener('click', ()=>{
-    invoiceModal.classList.add('hidden');
-    overlay.classList.add('hidden');
-    invoiceFrame.src = '';
-});
-
-// Send invoice to server and show preview
-async function generateAndShowInvoice(sendAlso=false){
-    const name = document.getElementById('cust-name').value.trim();
-    const phone = document.getElementById('cust-phone').value.trim();
-    const city = document.getElementById('cust-city').value.trim();
-    const address = document.getElementById('cust-address').value.trim();
-
-    if(!name || !phone || !address){
-        alert("لطفا نام، شماره تماس و آدرس را کامل کنید.");
-        return;
-    }
-
-    const cartArray = Object.keys(cart).map(code => ({code, count: cart[code]}));
-    const payload = {name, phone, city, address, cart: cartArray};
-
-    // POST and receive PDF blob
-    const res = await fetch('/api/order', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-    });
-    if(!res.ok){
-        const txt = await res.text();
-        alert("خطا در ساخت فاکتور: " + txt);
-        return;
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    invoiceFrame.src = url;
-
-    if(sendAlso){
-        // already the server sends to admin (main.py), but we can notify user
-        alert("فاکتور ارسال شده و پیش نمایش آماده است.");
-        // empty cart (optional)
-        cart = {};
-        updateCartUI();
-        cartDrawer.classList.add('hidden');
-    }
-}
-
-// Bind send button
-sendInvoiceBtn.addEventListener('click', async ()=>{
-    await generateAndShowInvoice(true);
-});
-
-/* small toast */
-function toast(text){
-    const el = document.createElement('div');
-    el.className = 'toast';
-    el.textContent = text;
-    document.body.appendChild(el);
-    setTimeout(()=> el.classList.add('visible'),10);
-    setTimeout(()=> { el.classList.remove('visible'); setTimeout(()=> el.remove(),300); }, 2000);
-}
-
-/* hero slider basic */
-let heroIndex = 0;
-const slides = document.querySelectorAll('.slide');
-document.getElementById('hero-next').addEventListener('click', ()=> { heroIndex = (heroIndex+1)%slides.length; setHero(); });
-document.getElementById('hero-prev').addEventListener('click', ()=> { heroIndex = (heroIndex-1+slides.length)%slides.length; setHero(); });
-function setHero(){ slides.forEach((s,i)=> s.classList.toggle('active', i===heroIndex)); }
-setInterval(()=>{ heroIndex=(heroIndex+1)%slides.length; setHero(); }, 5000);
-
-/* search */
-document.getElementById('search-btn').addEventListener('click', ()=>{
-    const q = document.getElementById('search-input').value.trim().toLowerCase();
-    if(!q) { renderCategories(); return; }
-    // filter cards
-    for(const cat in categories){
-        categories[cat].forEach(p=>{
-            const el = document.querySelector(`.product-card [data-code="${p.code}"]`);
-        });
-    }
-    // simpler: rebuild categories filtered
-    const filtered = {};
-    for(const cat in categories){
-        filtered[cat] = categories[cat].filter(p => p.name.toLowerCase().includes(q));
-    }
-    categoriesContainer.innerHTML = '';
-    for(const cat in filtered){
-        if(filtered[cat].length>0){
-            const row = document.createElement('section');
-            row.className = 'category-row';
-            row.innerHTML = `<div class="row-header"><h3>${cat}</h3></div><div class="row-content"></div>`;
-            const content = row.querySelector('.row-content');
-            filtered[cat].forEach(p=>{
-                const card = document.createElement('article');
-                card.className = 'product-card';
-                card.innerHTML = `<div class="p-image"><img src="${p.image}"></div><div class="p-body"><h4 class="p-title">${p.name}</h4><div class="p-price">${Number(p.price).toLocaleString()} تومان</div><div class="p-actions"><button class="btn-add" data-code="${p.code}">افزودن</button></div></div>`;
-                content.appendChild(card);
-            });
-            categoriesContainer.appendChild(row);
-        }
-    }
-    // rebind add
-    document.querySelectorAll('.btn-add').forEach(btn => btn.addEventListener('click', e=> addToCart(e.currentTarget.dataset.code,1)));
-}
-
-/* init */
-loadProducts();
-</script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
