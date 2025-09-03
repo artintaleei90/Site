@@ -214,8 +214,13 @@ sendInvoiceBtn.addEventListener('click', async ()=>{
     const city=document.getElementById('cust-city').value.trim();
     const address=document.getElementById('cust-address').value.trim();
     if(!name||!phone||!address){alert("لطفا نام، شماره تماس و آدرس را کامل کنید.");return;}
-    // ایجاد PDF یا نمایش فاکتور در iframe
-    invoiceFrame.src = `/invoice?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(city)}&address=${encodeURIComponent(address)}`;
+    const orders = Object.entries(cart).map(([code, qty]) => ({
+        code, 
+        name: productsByCode[code].name, 
+        price: productsByCode[code].price, 
+        count: qty
+    }));
+    invoiceFrame.src = `/invoice?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(city)}&address=${encodeURIComponent(address)}&orders=${encodeURIComponent(JSON.stringify(orders))}`;
 });
 
 function toast(msg){
