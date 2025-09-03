@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # تنظیمات ربات تلگرام
 BOT_TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
-ADMIN_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"  # آیدی عددی ادمین
+ADMIN_CHAT_ID = "6933858510"  # آیدی عددی ادمین
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # دیتابیس محصولات
