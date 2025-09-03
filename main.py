@@ -1,6 +1,5 @@
 import os
-from threading import Thread
-from flask import Flask, render_template, request, send_file, jsonify
+from flask import Flask, request, jsonify, send_file, render_template
 import telebot
 
 from reportlab.pdfgen import canvas
@@ -16,29 +15,26 @@ from bidi.algorithm import get_display
 
 # ---------------- CONFIG ----------------
 TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
-ADMIN_CHAT_ID = 6933858510# <-- جایگذاری کن با chat id خودت
+ADMIN_CHAT_ID = 6933858510  # جایگذاری با chat id خودت
+WEBHOOK_URL = "https://<YOUR-RENDER-DOMAIN>/webhook"  # لینک وبهوک روی Render
 
-# Path to Persian font (put Vazirmatn-Regular.ttf next to main.py)
 FONT_PATH = "Vazirmatn-Regular.ttf"
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+bot = telebot.TeleBot(TOKEN)
 
 # ---------------- Products ----------------
-# محصولاتی که فرستادی — در اینجا نمونه‌ای از آن‌ها (تکمیل شده)
 products = {
     "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "category": "women", "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
     "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "category": "women", "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
-    # ... (اگر بیشتر داری همینجا اضافه کن یا از دیتابیس بخون)
+    # محصولات بیشتر اینجا اضافه کن
 }
-
-# ---------------- TeleBot ----------------
-bot = telebot.TeleBot(TOKEN)
 
 # ---------------- Register Font ----------------
 if os.path.exists(FONT_PATH):
     pdfmetrics.registerFont(TTFont('Vazir', FONT_PATH))
 else:
-    print("هشدار: فونت فارسی Vazirmatn-Regular.ttf پیدا نشد. فاکتور ممکن است درست نمایش داده نشود.")
+    print("هشدار: فونت فارسی Vazirmatn-Regular.ttf پیدا نشد.")
 
 def reshape_text(text: str) -> str:
     try:
@@ -48,24 +44,12 @@ def reshape_text(text: str) -> str:
 
 # ---------------- PDF creation ----------------
 def create_pdf(filename: str, data: dict):
-    """
-    data should be like:
-    {
-      "name": "...",
-      "phone": "...",
-      "city": "...",
-      "address": "...",
-      "orders": [{"code":"3390","name":"...","price":123,"count":2}, ...]
-    }
-    """
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
 
-    # Title
     c.setFont("Vazir" if os.path.exists(FONT_PATH) else "Helvetica", 16)
-    c.drawCentredString(width/2, height - 2 * cm, reshape_text("🧾 فاکتور سفارش"))
+    c.drawCentredString(width/2, height - 2*cm, reshape_text("🧾 فاکتور سفارش"))
 
-    # Customer info
     c.setFont("Vazir" if os.path.exists(FONT_PATH) else "Helvetica", 12)
     y = height - 3.2 * cm
     customer_lines = [
@@ -79,7 +63,6 @@ def create_pdf(filename: str, data: dict):
         y -= 0.8*cm
 
     y -= 0.2*cm
-
     orders = data.get('orders', [])
     if not orders:
         c.drawRightString(width - 2*cm, y, reshape_text("هیچ محصولی ثبت نشده است."))
@@ -87,7 +70,6 @@ def create_pdf(filename: str, data: dict):
         c.save()
         return
 
-    # Table header
     table_data = [
         [reshape_text("کد محصول"), reshape_text("نام محصول"), reshape_text("تعداد"), reshape_text("قیمت واحد"), reshape_text("مبلغ کل")]
     ]
@@ -119,13 +101,11 @@ def create_pdf(filename: str, data: dict):
     table.wrapOn(c, width, height)
     table.drawOn(c, 2*cm, y - (len(table_data) * 1.1 * cm))
 
-    # Total
     y = y - (len(table_data) * 1.1 * cm) - 0.8*cm
     c.setFont("Vazir" if os.path.exists(FONT_PATH) else "Helvetica", 12)
     c.drawRightString(width - 2*cm, y, reshape_text(f"جمع کل: {total:,} تومان"))
 
     y -= 1*cm
-    # Bank info
     bank_lines = [
         "بانک سامان - به نام: آزیتا فتوحی مظفرنژاد",
         "شماره کارت: 6219-8610-6509-3089",
@@ -139,29 +119,17 @@ def create_pdf(filename: str, data: dict):
     c.showPage()
     c.save()
 
-# ---------------- Flask endpoints ----------------
+# ---------------- Flask routes ----------------
 @app.route('/')
 def index():
     return render_template("index.html")
 
 @app.route('/api/products', methods=['GET'])
 def api_products():
-    # Return products dict
     return jsonify(products)
 
 @app.route('/api/order', methods=['POST'])
 def api_order():
-    """
-    Expect JSON:
-    {
-      "name": "...",
-      "phone": "...",
-      "city": "...",
-      "address": "...",
-      "cart": [{"code":"3390","count":2}, ...]
-    }
-    Returns: PDF file as response and sends it to admin via telegram
-    """
     data = request.json or {}
     name = data.get("name","")
     phone = data.get("phone","")
@@ -175,7 +143,6 @@ def api_order():
         count = int(it.get("count",0))
         prod = products.get(code)
         if not prod:
-            # skip missing product
             continue
         orders.append({
             "code": code,
@@ -193,33 +160,35 @@ def api_order():
     }
 
     filename = f"invoice_{phone or 'guest'}.pdf"
-    try:
-        create_pdf(filename, pdf_data)
-    except Exception as e:
-        return {"error": f"خطا در ساخت PDF: {e}"}, 500
+    create_pdf(filename, pdf_data)
 
-    # Send to admin via telegram (if bot token valid)
+    # Send PDF to admin
     try:
         with open(filename, "rb") as f:
             bot.send_document(ADMIN_CHAT_ID, f)
     except Exception as e:
-        # Log but do not fail the request
         print("خطا در ارسال به تلگرام:", e)
 
-    # return PDF for inline preview/download
+    # Return PDF to user
+    response = send_file(filename, mimetype='application/pdf', as_attachment=False)
     try:
-        return send_file(filename, mimetype='application/pdf', as_attachment=False)
-    finally:
-        # cleanup file after returning (best effort)
-        try:
-            os.remove(filename)
-        except Exception:
-            pass
+        os.remove(filename)
+    except Exception:
+        pass
+    return response
 
-# ---------------- Keep Flask running in a thread and start telebot ----------------
-def run_flask():
-    app.run(host='0.0.0.0', port=8080)
+# ---------------- Webhook for Telegram ----------------
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
+
+# ---------------- Run Flask ----------------
 if __name__ == "__main__":
-    from threading import Thread
-    Thread(target=lambda: app.run(host="0.0.0.0", port=8080)).start()
-    bot.infinity_polling()
+    # Set webhook
+    bot.remove_webhook()
+    bot.set_webhook(url=WEBHOOK_URL)
+
+    app.run(host="0.0.0.0", port=8080)
