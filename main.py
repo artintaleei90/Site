@@ -14,10 +14,8 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 
 # ---------------- CONFIG ----------------
-TOKEN = "7739258515:AAEUXIZ3ySZ9xp9W31l7qr__sZkbf6qcKnE"
-ADMIN_CHAT_ID = 6933858510  # جایگذاری با chat id خودت
-WEBHOOK_URL = "https://halstonshop.onrender.com/webhook"
-
+TOKEN = "توکن_ربات_خودت"
+ADMIN_CHAT_ID = 6933858510  # جایگزین کن
 FONT_PATH = "Vazirmatn-Regular.ttf"
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -27,14 +25,13 @@ bot = telebot.TeleBot(TOKEN)
 products = {
     "3390": {"name": "فری سایز - پک 6 عددی رنگ: در تصویر", "price": 697000, "category": "women", "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0394.jpeg"},
     "1107": {"name": "فری سایز - پک 6 عددی رنگ: سفید و مشکی", "price": 547000, "category": "women", "image": "https://raw.githubusercontent.com/artintaleei90/Site/main/IMG_0395.jpeg"},
-    # محصولات بیشتر اینجا اضافه کن
 }
 
 # ---------------- Register Font ----------------
 if os.path.exists(FONT_PATH):
     pdfmetrics.registerFont(TTFont('Vazir', FONT_PATH))
 else:
-    print("هشدار: فونت فارسی Vazirmatn-Regular.ttf پیدا نشد.")
+    print("⚠️ فونت فارسی Vazirmatn-Regular.ttf پیدا نشد!")
 
 def reshape_text(text: str) -> str:
     try:
@@ -105,17 +102,6 @@ def create_pdf(filename: str, data: dict):
     c.setFont("Vazir" if os.path.exists(FONT_PATH) else "Helvetica", 12)
     c.drawRightString(width - 2*cm, y, reshape_text(f"جمع کل: {total:,} تومان"))
 
-    y -= 1*cm
-    bank_lines = [
-        "بانک سامان - به نام: آزیتا فتوحی مظفرنژاد",
-        "شماره کارت: 6219-8610-6509-3089",
-        "شماره شبا: IR440560083280078294010001",
-        "لطفاً پس از واریز، فیش را به شماره 09128883343 ارسال کنید."
-    ]
-    for line in bank_lines:
-        c.drawRightString(width - 2*cm, y, reshape_text(line))
-        y -= 0.7*cm
-
     c.showPage()
     c.save()
 
@@ -162,33 +148,21 @@ def api_order():
     filename = f"invoice_{phone or 'guest'}.pdf"
     create_pdf(filename, pdf_data)
 
-    # Send PDF to admin
+    # ارسال PDF به تلگرام
     try:
         with open(filename, "rb") as f:
             bot.send_document(ADMIN_CHAT_ID, f)
     except Exception as e:
-        print("خطا در ارسال به تلگرام:", e)
+        print("❌ خطا در ارسال به تلگرام:", e)
 
-    # Return PDF to user
-    response = send_file(filename, mimetype='application/pdf', as_attachment=False)
+    # بازگشت PDF به کاربر
+    response = send_file(filename, mimetype='application/pdf', as_attachment=True)
     try:
         os.remove(filename)
-    except Exception:
+    except:
         pass
     return response
 
-# ---------------- Webhook for Telegram ----------------
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
-    return "!", 200
-
 # ---------------- Run Flask ----------------
 if __name__ == "__main__":
-    # Set webhook
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL)
-
     app.run(host="0.0.0.0", port=8080)
