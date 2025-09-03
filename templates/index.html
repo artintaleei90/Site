@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Halston Shop</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Halston Shop</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header class="site-header">
@@ -76,6 +76,157 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script>
+const productsByCode = {};
+let categories = {};
+let cart = {};
+
+const categoriesContainer = document.getElementById('categories-container');
+const cartBadge = document.getElementById('cart-badge');
+const overlay = document.getElementById('overlay');
+const cartDrawer = document.getElementById('cart-drawer');
+const cartItemsEl = document.getElementById('cart-items');
+const cartSummaryEl = document.getElementById('cart-summary');
+
+const invoiceModal = document.getElementById('invoice-modal');
+const invoiceFrame = document.getElementById('invoice-frame');
+const sendInvoiceBtn = document.getElementById('send-invoice-btn');
+
+async function loadProducts(){
+    const res = await fetch('/api/products');
+    const data = await res.json();
+    categories = {};
+    for(const code in data){
+        const p = data[code];
+        productsByCode[code] = {...p, code};
+        const cat = p.category || 'all';
+        if(!categories[cat]) categories[cat] = [];
+        categories[cat].push({...p, code});
+    }
+    renderCategories();
+}
+
+function renderCategories(){
+    categoriesContainer.innerHTML = '';
+    for(const cat in categories){
+        const row = document.createElement('section');
+        row.className = 'category-row';
+        row.innerHTML = `
+            <div class="row-header">
+                <h3>${cat === 'all' ? 'همه محصولات' : cat}</h3>
+                <div class="row-controls">
+                    <button class="scroll-left">‹</button>
+                    <button class="scroll-right">›</button>
+                </div>
+            </div>
+            <div class="row-content"></div>
+        `;
+        const content = row.querySelector('.row-content');
+        categories[cat].forEach(p => {
+            const card = document.createElement('article');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="p-image"><img src="${p.image}" alt="${p.name}"></div>
+                <div class="p-body">
+                    <h4 class="p-title">${p.name}</h4>
+                    <div class="p-price">${Number(p.price).toLocaleString()} تومان</div>
+                    <div class="p-actions">
+                        <button class="btn-details" data-code="${p.code}">جزئیات</button>
+                        <button class="btn-add" data-code="${p.code}">افزودن</button>
+                    </div>
+                </div>
+            `;
+            content.appendChild(card);
+        });
+        row.querySelector('.scroll-left').addEventListener('click', ()=> content.scrollBy({left: -360, behavior: 'smooth'}));
+        row.querySelector('.scroll-right').addEventListener('click', ()=> content.scrollBy({left: 360, behavior: 'smooth'}));
+        categoriesContainer.appendChild(row);
+    }
+    bindButtons();
+}
+
+function bindButtons(){
+    document.querySelectorAll('.btn-add').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+            const code = e.currentTarget.dataset.code;
+            const qty = parseInt(prompt("تعداد را وارد کنید:", "1"));
+            if(!isNaN(qty) && qty>0) addToCart(code, qty);
+        });
+    });
+    document.querySelectorAll('.btn-details').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+            const code = e.currentTarget.dataset.code;
+            const p = productsByCode[code];
+            alert(`${p.name}\nقیمت: ${Number(p.price).toLocaleString()} تومان`);
+        });
+    });
+}
+
+function addToCart(code, qty=1){
+    if(cart[code]) cart[code] += qty; else cart[code]=qty;
+    updateCartUI();
+    toast("به سبد خرید اضافه شد");
+}
+
+function updateCartUI(){
+    const count = Object.values(cart).reduce((a,b)=>a+b,0);
+    cartBadge.textContent = count;
+    cartItemsEl.innerHTML = '';
+    let total=0;
+    for(const code in cart){
+        const p = productsByCode[code];
+        const qty = cart[code];
+        const item = document.createElement('div');
+        item.className = 'cart-row';
+        item.innerHTML = `
+            <img src="${p.image}" alt="${p.name}">
+            <div class="info">
+                <div class="name">${p.name}</div>
+                <div class="meta">${Number(p.price).toLocaleString()} × ${qty} = ${Number(p.price*qty).toLocaleString()} تومان</div>
+                <div class="controls">
+                    <button class="dec" data-code="${code}">-</button>
+                    <span class="qty">${qty}</span>
+                    <button class="inc" data-code="${code}">+</button>
+                    <button class="remove" data-code="${code}">حذف</button>
+                </div>
+            </div>
+        `;
+        cartItemsEl.appendChild(item);
+        total += p.price*qty;
+    }
+    cartSummaryEl.textContent = `جمع کل: ${Number(total).toLocaleString()} تومان`;
+
+    cartItemsEl.querySelectorAll('.inc').forEach(b=>b.addEventListener('click', e=>{cart[e.currentTarget.dataset.code]+=1; updateCartUI();}));
+    cartItemsEl.querySelectorAll('.dec').forEach(b=>b.addEventListener('click', e=>{const code=e.currentTarget.dataset.code; cart[code]>1?cart[code]-=1:delete cart[code]; updateCartUI();}));
+    cartItemsEl.querySelectorAll('.remove').forEach(b=>b.addEventListener('click', e=>{delete cart[e.currentTarget.dataset.code]; updateCartUI();}));
+}
+
+document.getElementById('cart-open-btn').addEventListener('click', ()=>{cartDrawer.classList.remove('hidden');overlay.classList.remove('hidden');});
+document.getElementById('cart-close').addEventListener('click', ()=>{cartDrawer.classList.add('hidden');overlay.classList.add('hidden');});
+overlay.addEventListener('click', ()=>{cartDrawer.classList.add('hidden');invoiceModal.classList.add('hidden');overlay.classList.add('hidden');invoiceFrame.src='';});
+
+document.getElementById('view-invoice').addEventListener('click', ()=>{if(Object.keys(cart).length===0){alert("سبد خرید خالی است");return;}invoiceModal.classList.remove('hidden');overlay.classList.remove('hidden');});
+document.getElementById('close-invoice').addEventListener('click', ()=>{invoiceModal.classList.add('hidden');overlay.classList.add('hidden');invoiceFrame.src='';});
+
+sendInvoiceBtn.addEventListener('click', async ()=>{
+    const name=document.getElementById('cust-name').value.trim();
+    const phone=document.getElementById('cust-phone').value.trim();
+    const city=document.getElementById('cust-city').value.trim();
+    const address=document.getElementById('cust-address').value.trim();
+    if(!name||!phone||!address){alert("لطفا نام، شماره تماس و آدرس را کامل کنید.");return;}
+    // ایجاد PDF یا نمایش فاکتور در iframe
+    invoiceFrame.src = `/invoice?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(city)}&address=${encodeURIComponent(address)}`;
+});
+
+function toast(msg){
+    let t = document.createElement('div');
+    t.className='toast visible';
+    t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),1500);
+}
+
+loadProducts();
+</script>
 </body>
 </html>
